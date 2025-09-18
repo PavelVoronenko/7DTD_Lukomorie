@@ -3,7 +3,6 @@ package com.antago30.a7dtd_lukomorie
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import com.antago30.a7dtd_lukomorie.fragments.InfoFragment
 import com.antago30.a7dtd_lukomorie.fragments.LeaderboardFragment
@@ -11,10 +10,12 @@ import com.antago30.a7dtd_lukomorie.fragments.NewsFragment
 import com.antago30.a7dtd_lukomorie.fragments.PlayersFragment
 import com.antago30.a7dtd_lukomorie.fragments.VisitorsFragment
 import com.antago30.a7dtd_lukomorie.model.MenuItem
+import android.widget.ImageButton
+import androidx.core.view.GravityCompat
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var drawerLayout: com.antago30.a7dtd_lukomorie.ui.SwipeAwareDrawerLayout
     private lateinit var navigationView: NavigationView
 
     private val menuItems = listOf(
@@ -31,6 +32,16 @@ class MainActivity : AppCompatActivity() {
 
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.nav_view)
+
+        // 👇 КНОПКА — ТОЛЬКО ДЛЯ КЛИКА
+        val fabToggle = findViewById<ImageButton>(R.id.fab_drawer_toggle)
+        fabToggle.setOnClickListener {
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START)
+            } else {
+                drawerLayout.openDrawer(GravityCompat.START)
+            }
+        }
 
         supportFragmentManager.fragmentFactory = AppFragmentFactory()
 
