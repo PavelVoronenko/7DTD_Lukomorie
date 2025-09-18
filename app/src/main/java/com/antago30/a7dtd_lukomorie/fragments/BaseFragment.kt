@@ -13,7 +13,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import com.antago30.a7dtd_lukomorie.utils.Constants
 
 abstract class BaseFragment : Fragment() {
 
@@ -34,6 +33,10 @@ abstract class BaseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
         startRefresh()
     }
 
@@ -47,6 +50,10 @@ abstract class BaseFragment : Fragment() {
     private var refreshJob: Job? = null
 
     private fun startRefresh() {
+        if (refreshJob != null && refreshJob!!.isActive) {
+            return
+        }
+
         refreshJob = viewLifecycleOwner.lifecycleScope.launch {
             while (true) {
                 val data = withContext(Dispatchers.IO) {
