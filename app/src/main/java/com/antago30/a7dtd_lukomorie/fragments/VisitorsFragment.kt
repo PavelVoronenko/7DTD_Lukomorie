@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.antago30.a7dtd_lukomorie.R
-import com.antago30.a7dtd_lukomorie.utils.Constants
-import java.io.IOException
 
 class VisitorsFragment : BaseFragment() {
 
@@ -24,11 +22,11 @@ class VisitorsFragment : BaseFragment() {
     }
 
     override fun loadData(): Any {
-        TODO("Not yet implemented")
+        return 1
     }
 
     override fun updateUI(data: Any) {
-        TODO("Not yet implemented")
+
     }
 
     /*override fun loadData() {

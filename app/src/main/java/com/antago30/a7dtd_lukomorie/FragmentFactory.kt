@@ -1,6 +1,5 @@
 package com.antago30.a7dtd_lukomorie
 
-import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.antago30.a7dtd_lukomorie.fragments.InfoFragment

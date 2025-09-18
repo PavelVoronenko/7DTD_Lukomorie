@@ -42,7 +42,7 @@ abstract class BaseFragment : Fragment() {
         stopRefresh()
     }
 
-    abstract fun loadData(): Any // 👈 ВСЕ ФРАГМЕНТЫ ВОЗВРАЩАЮТ СВОИ ДАННЫЕ
+    abstract fun loadData(): Any
 
     private var refreshJob: Job? = null
 
@@ -50,13 +50,11 @@ abstract class BaseFragment : Fragment() {
         refreshJob = viewLifecycleOwner.lifecycleScope.launch {
             while (true) {
                 val data = withContext(Dispatchers.IO) {
-                    // 👇 Вызываем loadData() — он выполняется в фоне
                     loadData()
                 }
 
-                // 👇 Переключаемся обратно в Main-поток для обновления UI
                 withContext(Dispatchers.Main) {
-                    updateUI(data) // 👈 Теперь мы передаём ANY — фрагмент сам разберётся
+                    updateUI(data)
                 }
 
                 delay(10000)
@@ -68,6 +66,5 @@ abstract class BaseFragment : Fragment() {
         refreshJob?.cancel()
     }
 
-    // 👇 АБСТРАКТНЫЙ МЕТОД — КАЖДЫЙ ФРАГМЕНТ САМ ОПРЕДЕЛЯЕТ, КАК ОБНОВЛЯТЬ UI
     protected abstract fun updateUI(data: Any)
 }

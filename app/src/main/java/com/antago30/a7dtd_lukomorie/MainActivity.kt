@@ -1,7 +1,6 @@
 package com.antago30.a7dtd_lukomorie
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.drawerlayout.widget.DrawerLayout
@@ -37,11 +36,8 @@ class MainActivity : AppCompatActivity() {
 
         setupNavigation()
 
-        Log.d("MainActivity", "=== STARTING INITIAL FRAGMENT LOAD ===")
         val firstFragment = InfoFragment()
-        Log.d("MainActivity", "Created fragment: ${firstFragment.javaClass.simpleName}")
         loadFragment(firstFragment)
-        Log.d("MainActivity", "Fragment loaded and replaced in content_frame")
     }
 
     private fun setupNavigation() {

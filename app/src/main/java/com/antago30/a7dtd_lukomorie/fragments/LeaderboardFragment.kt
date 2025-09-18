@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.antago30.a7dtd_lukomorie.R
 import com.antago30.a7dtd_lukomorie.adapter.PlayersAdapter
-import com.antago30.a7dtd_lukomorie.utils.Constants
-import java.io.IOException
 
 class LeaderboardFragment : BaseFragment() {
 
@@ -30,11 +28,11 @@ class LeaderboardFragment : BaseFragment() {
     }
 
     override fun loadData(): Any {
-        TODO("Not yet implemented")
+        return 1
     }
 
     override fun updateUI(data: Any) {
-        TODO("Not yet implemented")
+
     }
 
     /*override fun loadData() {

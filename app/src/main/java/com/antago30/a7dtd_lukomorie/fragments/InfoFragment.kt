@@ -6,10 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import com.antago30.a7dtd_lukomorie.R
 import com.antago30.a7dtd_lukomorie.model.ServerInfo
-import com.antago30.a7dtd_lukomorie.parser.WebParser
 import com.antago30.a7dtd_lukomorie.utils.Constants
 
 class InfoFragment : BaseFragment() {
@@ -36,13 +34,13 @@ class InfoFragment : BaseFragment() {
         return view
     }
 
-    // 👇 ПАРСИНГ — В ФОНЕ
+
     override fun loadData(): Any {
         return try {
             webParser.parseInfo(Constants.INFO_URL)
         } catch (e: Exception) {
             Log.e("InfoFragment", "Ошибка парсинга", e)
-            ServerInfo("Ошибка загрузки", "00:00", 0, 0, "22:00") // 👈 Фейковый ответ при ошибке
+            ServerInfo("Ошибка загрузки", "00:00", 0, 0, "22:00")
         }
     }
 

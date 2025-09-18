@@ -17,7 +17,7 @@ class WebParser {
     fun parsePlayers(url: String): List<Player> {
         val document = Jsoup.connect(url).get()
         val table = document.select("table[border='0']")
-        val rows = table.select("tr").drop(1) // Пропускаем заголовок
+        val rows = table.select("tr").drop(1)
         return rows.map { row ->
             val cells = row.select("td")
             Player(
@@ -38,27 +38,22 @@ class WebParser {
             .timeout(20000)
             .get()
 
-        // 👇 Получаем весь текст страницы (без тегов)
         val fullText = document.body().text().trim()
         Log.d("WebParser", "🔍 Полный текст страницы:\n$fullText")
 
-        // 👇 ИЗВЛЕКАЕМ СТАТУС
         val statusPattern = Regex("Статус сервера:\\s*(.+?)\\s+Время")
         val statusMatch = statusPattern.find(fullText)
         val status = statusMatch?.groups?.get(1)?.value?.trim() ?: "Unknown"
 
-        // 👇 ИЗВЛЕКАЕМ ВРЕМЯ И ДЕНЬ — ОДНОЙ РЕГУЛЯРКОЙ!
         val timeDayPattern = Regex("Время сервера:\\s*(\\d{1,2}:\\d{1,2})\\s*День №\\s*(\\d+)")
         val timeDayMatch = timeDayPattern.find(fullText)
         val time = timeDayMatch?.groups?.get(1)?.value ?: "00:00"
         val day = timeDayMatch?.groups?.get(2)?.value?.toIntOrNull() ?: 0
 
-        // 👇 ИЗВЛЕКАЕМ ИГРОКОВ ОНЛАЙН
         val playersPattern = Regex("Игроков на сервере:\\s*(\\d+)")
         val playersMatch = playersPattern.find(fullText)
         val playersOnline = playersMatch?.groups?.get(1)?.value?.toIntOrNull() ?: 0
 
-        // 👇 КРОВАВАЯ ЛУНА (рассчитывается по дню)
         val bloodMoonHour = 22
         val bloodMoonTime = "${bloodMoonHour}:00"
 
