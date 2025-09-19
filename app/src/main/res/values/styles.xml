@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.7DTD_Lukomorie" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Цвета и параметры темы -->
+    </style>
+</resources>

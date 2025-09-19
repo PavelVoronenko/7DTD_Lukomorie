@@ -11,6 +11,8 @@ import com.antago30.a7dtd_lukomorie.fragments.PlayersFragment
 import com.antago30.a7dtd_lukomorie.fragments.VisitorsFragment
 import com.antago30.a7dtd_lukomorie.model.MenuItem
 import android.widget.ImageButton
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.core.view.GravityCompat
 
 class MainActivity : AppCompatActivity() {
@@ -28,12 +30,19 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(
+                getColor(R.color.status_bar_dark),
+                getColor(R.color.status_bar_white)
+            )
+        )
+
         setContentView(R.layout.activity_main)
 
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.nav_view)
 
-        // 👇 КНОПКА — ТОЛЬКО ДЛЯ КЛИКА
         val fabToggle = findViewById<ImageButton>(R.id.fab_drawer_toggle)
         fabToggle.setOnClickListener {
             if (drawerLayout.isDrawerOpen(GravityCompat.START)) {

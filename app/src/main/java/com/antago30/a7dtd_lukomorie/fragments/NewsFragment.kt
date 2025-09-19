@@ -1,6 +1,7 @@
 package com.antago30.a7dtd_lukomorie.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.antago30.a7dtd_lukomorie.R
 import com.antago30.a7dtd_lukomorie.adapter.NavigationAdapter
+import com.antago30.a7dtd_lukomorie.model.NewsItem
+import com.antago30.a7dtd_lukomorie.utils.Constants
+import java.io.IOException
 
 class NewsFragment : BaseFragment() {
 
@@ -28,19 +32,21 @@ class NewsFragment : BaseFragment() {
     }
 
     override fun loadData(): Any {
-        return 1
+        return try {
+            webParser.parseNews(Constants.NEWS_URL)
+        } catch (e: IOException) {
+            Log.e("NewsFragment", "Ошибка загрузки новостей", e)
+            emptyList()
+        }
     }
 
     override fun updateUI(data: Any) {
-
-    }
-
-    /*override fun loadData() {
-        try {
-            val news = webParser.parseNews(Constants.NEWS_URL)
-            adapter.updateData(news)
-        } catch (e: IOException) {
-            // Handle error
+        if (data is List<*>) {
+            @Suppress("UNCHECKED_CAST")
+            val newsList = data as List<NewsItem>
+            adapter.updateData(newsList)
+        } else {
+            adapter.updateData(emptyList())
         }
-    }*/
+    }
 }

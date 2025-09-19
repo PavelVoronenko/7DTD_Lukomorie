@@ -5,13 +5,14 @@ import com.antago30.a7dtd_lukomorie.model.NewsItem
 import com.antago30.a7dtd_lukomorie.model.Player
 import com.antago30.a7dtd_lukomorie.model.ServerInfo
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
+import org.jsoup.nodes.Node
 import java.io.IOException
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class WebParser {
-
-    private val dateFormat = DateTimeFormatter.ofPattern("HH:mm")
-    private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
     @Throws(IOException::class)
     fun parsePlayers(url: String): List<Player> {
@@ -68,14 +69,71 @@ class WebParser {
 
     @Throws(IOException::class)
     fun parseNews(url: String): List<NewsItem> {
-        val document = Jsoup.connect(url).get()
-        val newsItems = document.select(".news-item")
-        return newsItems.map { item ->
-            val title = item.select(".title").text()
-            val content = item.select(".content").text()
-            val timestamp = item.select(".timestamp").text()
-            NewsItem(title, content, timestamp)
+        val document = Jsoup.connect(url)
+            .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+            .timeout(15000)
+            .get()
+
+        val newsItems = mutableListOf<NewsItem>()
+        val inputDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        val baseUrl = "http://79.173.124.221:2000/"
+
+        val headers = document.select("h3")
+
+        for (header in headers) {
+            val fullHeaderText = header.text().trim()
+            val regex = Regex("""(\d{2}\.\d{2}\.\d{4})\s*-\s*(.+)""")
+            val matchResult = regex.matchEntire(fullHeaderText)
+
+            if (matchResult != null) {
+                val (dateStr, title) = matchResult.destructured
+
+                val contentBuilder = StringBuilder()
+                var node: Node? = header.nextSibling()
+
+                while (node != null) {
+                    if (node is Element) {
+                        val tagName = node.tagName().lowercase()
+                        if (tagName == "hr" || tagName == "h3") break
+                        contentBuilder.append(node.outerHtml())
+                    } else {
+                        contentBuilder.append(node.toString())
+                    }
+                    node = node.nextSibling()
+                }
+
+                var rawHtmlContent = contentBuilder.toString()
+
+                rawHtmlContent = rawHtmlContent
+                    .replace(Regex("<br\\s*/?>", RegexOption.IGNORE_CASE), " ")
+                    .replace(Regex("""href\s*=\s*["'](.*?)["']""")) { matchResult ->
+                        val originalHref = matchResult.groupValues[1].trim()
+                        if (originalHref.startsWith("http://") || originalHref.startsWith("https://")) {
+                            "href=\"$originalHref\""
+                        } else {
+                            "href=\"$baseUrl$originalHref\""
+                        }
+                    }
+                    .trim()
+                    .replace(Regex("\\s+"), " ")
+
+                newsItems.add(
+                    NewsItem(
+                        title = "\uD83D\uDCF0 $title",
+                        content = rawHtmlContent,
+                        timestamp = dateStr
+                    )
+                )
+            }
         }
+
+        return newsItems.sortedWith(compareByDescending { newsItem ->
+            try {
+                inputDateFormat.parse(newsItem.timestamp)
+            } catch (e: Exception) {
+                Date(0)
+            }
+        })
     }
 
     @Throws(IOException::class)
