@@ -1,7 +1,6 @@
 package com.antago30.a7dtd_lukomorie.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

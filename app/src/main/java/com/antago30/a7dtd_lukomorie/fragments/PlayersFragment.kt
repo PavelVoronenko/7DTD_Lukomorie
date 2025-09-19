@@ -1,6 +1,7 @@
 package com.antago30.a7dtd_lukomorie.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.antago30.a7dtd_lukomorie.R
 import com.antago30.a7dtd_lukomorie.adapter.PlayersAdapter
+import com.antago30.a7dtd_lukomorie.model.PlayerItem
+import com.antago30.a7dtd_lukomorie.utils.Constants
 
 class PlayersFragment : BaseFragment() {
 
@@ -31,21 +34,33 @@ class PlayersFragment : BaseFragment() {
     }
 
     override fun loadData(): Any {
-        return 1
+        return try {
+            Log.d("PlayersOnlineFragment", "Загрузка списка игроков...")
+            webParser.parseOnlinePlayers(Constants.PLAYERS_URL) // Добавь в Constants
+        } catch (e: Exception) {
+            Log.e("PlayersOnlineFragment", "Ошибка загрузки игроков", e)
+            emptyList<PlayerItem>()
+        }
     }
 
     override fun updateUI(data: Any) {
+        if (data is List<*>) {
+            @Suppress("UNCHECKED_CAST")
+            val playerList = data as List<PlayerItem>
+            Log.d("PlayersOnlineFragment", "Получено ${playerList.size} игроков")
 
-    }
-
-    /*override fun loadData() {
-        try {
-            val players = webParser.parsePlayers(Constants.PLAYERS_URL)
-            adapter.updateData(players)
-            emptyText.visibility = if (players.isEmpty()) View.VISIBLE else View.GONE
-        } catch (e: IOException) {
-            emptyText.text = "Ошибка загрузки"
+            if (playerList.isEmpty()) {
+                recyclerView.visibility = View.GONE
+                emptyText.visibility = View.VISIBLE
+            } else {
+                recyclerView.visibility = View.VISIBLE
+                emptyText.visibility = View.GONE
+                adapter.updateData(playerList)
+            }
+        } else {
+            recyclerView.visibility = View.GONE
             emptyText.visibility = View.VISIBLE
+            adapter.updateData(emptyList())
         }
-    }*/
+    }
 }

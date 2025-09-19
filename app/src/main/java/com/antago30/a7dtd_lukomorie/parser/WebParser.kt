@@ -1,7 +1,7 @@
 package com.antago30.a7dtd_lukomorie.parser
 
 import com.antago30.a7dtd_lukomorie.model.NewsItem
-import com.antago30.a7dtd_lukomorie.model.Player
+import com.antago30.a7dtd_lukomorie.model.PlayerItem
 import com.antago30.a7dtd_lukomorie.model.ServerInfo
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
@@ -14,28 +14,56 @@ import java.util.Locale
 class WebParser {
 
     @Throws(IOException::class)
-    fun parsePlayers(url: String): List<Player> {
-        val document = Jsoup.connect(url).get()
-        val table = document.select("table[border='0']")
+    fun parseOnlinePlayers(url: String): List<PlayerItem> {
+        val document = Jsoup.connect(url)
+            .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+            .timeout(10000)
+            .get()
+
+        val players = mutableListOf<PlayerItem>()
+        val table = document.select("table").firstOrNull() ?: return emptyList()
+
+        // Пропускаем заголовок (первую строку)
         val rows = table.select("tr").drop(1)
-        return rows.map { row ->
+        for (row in rows) {
             val cells = row.select("td")
-            Player(
-                name = cells[0].select("a").text(),
-                level = cells[1].text().toIntOrNull() ?: 0,
-                deaths = cells[2].text().toIntOrNull() ?: 0,
-                zombiesKilled = cells[3].text().toIntOrNull() ?: 0,
-                playersKilled = cells[4].text().toIntOrNull() ?: 0,
-                totalScore = cells[5].text().toIntOrNull() ?: 0
-            )
+            if (cells.size < 6) continue // Пропускаем неполные строки
+
+            try {
+                val nameElement = cells[0].selectFirst("a")
+                val name = nameElement?.text()?.trim() ?: cells[0].text().trim()
+                val steamProfileUrl = nameElement?.attr("href")?.takeIf { it.isNotBlank() }
+
+                val level = cells[1].text().trim().toIntOrNull() ?: 0
+                val deaths = cells[2].text().trim().toIntOrNull() ?: 0
+                val zombiesKilled = cells[3].text().trim().toIntOrNull() ?: 0
+                val playersKilled = cells[4].text().trim().toIntOrNull() ?: 0
+                val totalScore = cells[5].text().trim().toIntOrNull() ?: 0
+
+                players.add(
+                    PlayerItem(
+                        name = name,
+                        level = level,
+                        deaths = deaths,
+                        zombiesKilled = zombiesKilled,
+                        playersKilled = playersKilled,
+                        totalScore = totalScore,
+                        steamProfileUrl = steamProfileUrl
+                    )
+                )
+            } catch (e: Exception) {
+                // Пропускаем строку с ошибкой
+            }
         }
+
+        return players
     }
 
     @Throws(IOException::class)
     fun parseInfo(url: String): ServerInfo {
         val document = Jsoup.connect(url)
             .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36")
-            .timeout(20000)
+            .timeout(10000)
             .get()
 
         val fullText = document.body().text().trim()
@@ -69,7 +97,7 @@ class WebParser {
     fun parseNews(url: String): List<NewsItem> {
         val document = Jsoup.connect(url)
             .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-            .timeout(15000)
+            .timeout(10000)
             .get()
 
         val newsItems = mutableListOf<NewsItem>()
@@ -135,12 +163,12 @@ class WebParser {
     }
 
     @Throws(IOException::class)
-    fun parseLeaderboard(url: String): List<Player> {
+    fun parseLeaderboard(url: String): List<PlayerItem> {
         val document = Jsoup.connect(url).get()
         val rows = document.select("table tr").drop(1)
         return rows.map { row ->
             val cells = row.select("td")
-            Player(
+            PlayerItem(
                 name = cells[0].text(),
                 level = cells[1].text().toIntOrNull() ?: 0,
                 deaths = cells[2].text().toIntOrNull() ?: 0,
