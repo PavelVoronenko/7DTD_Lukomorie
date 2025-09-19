@@ -1,6 +1,5 @@
 package com.antago30.a7dtd_lukomorie.parser
 
-import android.util.Log
 import com.antago30.a7dtd_lukomorie.model.NewsItem
 import com.antago30.a7dtd_lukomorie.model.Player
 import com.antago30.a7dtd_lukomorie.model.ServerInfo
@@ -40,7 +39,6 @@ class WebParser {
             .get()
 
         val fullText = document.body().text().trim()
-        Log.d("WebParser", "🔍 Полный текст страницы:\n$fullText")
 
         val statusPattern = Regex("Статус сервера:\\s*(.+?)\\s+Время")
         val statusMatch = statusPattern.find(fullText)
