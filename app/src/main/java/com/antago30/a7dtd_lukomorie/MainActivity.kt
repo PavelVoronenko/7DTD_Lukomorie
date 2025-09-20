@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             MenuItem("Информация", InfoFragment::class.java, R.drawable.ic_info_white_24dp),
             MenuItem("Новости", NewsFragment::class.java, R.drawable.ic_news_white_24dp),
             MenuItem("Игроки онлайн", PlayersFragment::class.java, R.drawable.ic_people_white_24dp),
-            MenuItem("Таблица лидеров", LeaderboardFragment::class.java, R.drawable.ic_leaderboard_white_24dp),
+            MenuItem("Лидеры сервера", LeaderboardFragment::class.java, R.drawable.ic_leaderboard_white_24dp),
             MenuItem("Посетители за сутки", VisitorsFragment::class.java, R.drawable.ic_visitors_white_24dp)
         )
 

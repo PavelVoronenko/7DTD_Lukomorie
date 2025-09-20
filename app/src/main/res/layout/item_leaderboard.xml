@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#1e1e1e">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/player_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Имя игрока"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/player_level"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Уровень: 120"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="16sp"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/player_deaths"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Смертей: 0"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="14sp"
+            android:layout_marginTop="2dp" />
+
+        <TextView
+            android:id="@+id/zombies_killed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Убито зомби: 9332"
+            android:textColor="@android:color/holo_green_light"
+            android:textSize="14sp"
+            android:layout_marginTop="2dp" />
+
+        <TextView
+            android:id="@+id/players_killed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Убито игроков: 0"
+            android:textColor="@android:color/holo_orange_light"
+            android:textSize="14sp"
+            android:layout_marginTop="2dp" />
+
+        <TextView
+            android:id="@+id/total_score"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Всего очков: 9328"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:gravity="end" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

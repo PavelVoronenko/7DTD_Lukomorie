@@ -32,6 +32,7 @@
         app:cardBackgroundColor="#1e1e1e"
         app:cardCornerRadius="8dp"
         app:cardElevation="2dp"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_text">
@@ -102,6 +103,7 @@
     android:clipToPadding="false"
     android:paddingStart="8dp"
     android:paddingTop="4dp"
+    android:nestedScrollingEnabled="false"
     android:paddingEnd="8dp"
     android:paddingBottom="8dp"
     app:layout_constraintBottom_toBottomOf="parent"

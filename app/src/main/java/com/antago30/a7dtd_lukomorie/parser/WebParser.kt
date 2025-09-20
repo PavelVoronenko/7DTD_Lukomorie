@@ -1,5 +1,6 @@
 package com.antago30.a7dtd_lukomorie.parser
 
+import android.util.Log
 import com.antago30.a7dtd_lukomorie.model.NewsItem
 import com.antago30.a7dtd_lukomorie.model.PlayerItem
 import com.antago30.a7dtd_lukomorie.model.ServerInfo
@@ -164,19 +165,47 @@ class WebParser {
 
     @Throws(IOException::class)
     fun parseLeaderboard(url: String): List<PlayerItem> {
-        val document = Jsoup.connect(url).get()
-        val rows = document.select("table tr").drop(1)
-        return rows.map { row ->
+        val document = Jsoup.connect(url)
+            .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+            .timeout(15000)
+            .get()
+
+        val players = mutableListOf<PlayerItem>()
+        val table = document.select("table").firstOrNull() ?: return emptyList()
+
+
+        val rows = table.select("tr").drop(1)
+        for (row in rows) {
             val cells = row.select("td")
-            PlayerItem(
-                name = cells[0].text(),
-                level = cells[1].text().toIntOrNull() ?: 0,
-                deaths = cells[2].text().toIntOrNull() ?: 0,
-                zombiesKilled = cells[3].text().toIntOrNull() ?: 0,
-                playersKilled = cells[4].text().toIntOrNull() ?: 0,
-                totalScore = cells[5].text().toIntOrNull() ?: 0
-            )
+            if (cells.size >= 7) {
+                try {
+                    val number = cells[0].text().trim()         // №
+                    val name = cells[1].text().trim()           // Имя
+                    val level = cells[2].text().trim().toIntOrNull() ?: 0       // Уровень
+                    val deaths = cells[3].text().trim().toIntOrNull() ?: 0      // Смерти
+                    val zombiesKilled = cells[4].text().trim().toIntOrNull() ?: 0   // Убито зомби
+                    val playersKilled = cells[5].text().trim().toIntOrNull() ?: 0   // Убито игроков
+                    val totalScore = cells[6].text().trim().toIntOrNull() ?: 0      // Всего очков
+
+                    val fullName = "$number. $name"
+
+                    players.add(
+                        PlayerItem(
+                            name = fullName,
+                            level = level,
+                            deaths = deaths,
+                            zombiesKilled = zombiesKilled,
+                            playersKilled = playersKilled,
+                            totalScore = totalScore
+                        )
+                    )
+                } catch (e: Exception) {
+                    Log.w("WebParser", "Ошибка парсинга строки игрока: ${row.text()}", e)
+                }
+            }
         }
+
+        return players
     }
 
     @Throws(IOException::class)
