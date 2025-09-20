@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
-import android.util.Log
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import kotlin.math.abs
@@ -31,16 +30,23 @@ class SwipeAwareDrawerLayout : DrawerLayout {
                     velocityX: Float,
                     velocityY: Float
                 ): Boolean {
-                    Log.d("SwipeAwareDrawer", "onFling called!")
 
                     if (e1 != null && e2 != null) {
                         val deltaX = e2.x - e1.x
                         val deltaY = e2.y - e1.y
 
-                        if (abs(deltaX) > abs(deltaY) && deltaX > 10) {
-                            Log.d("SwipeAwareDrawer", "SWIPE LEFT TO RIGHT detected! deltaX=$deltaX")
-                            openDrawer(GravityCompat.START)
-                            return true
+                        if (abs(deltaX) > abs(deltaY) && deltaX > 50 && velocityX > 0) {
+                            if (!isDrawerOpen(GravityCompat.START)) {
+                                openDrawer(GravityCompat.START)
+                                return true
+                            }
+                        }
+
+                        if (abs(deltaX) > abs(deltaY) && deltaX < -50 && velocityX < 0) {
+                            if (isDrawerOpen(GravityCompat.START)) {
+                                closeDrawer(GravityCompat.START)
+                                return true
+                            }
                         }
                     }
                     return false

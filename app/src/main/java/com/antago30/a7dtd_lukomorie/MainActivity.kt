@@ -11,17 +11,17 @@ import com.antago30.a7dtd_lukomorie.fragments.PlayersFragment
 import com.antago30.a7dtd_lukomorie.fragments.VisitorsFragment
 import com.antago30.a7dtd_lukomorie.model.MenuItem
 import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.GravityCompat
 import android.content.Intent
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.drawerlayout.widget.DrawerLayout
 import com.antago30.a7dtd_lukomorie.utils.Constants
+import android.widget.LinearLayout
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,14 +40,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         drawerLayout = findViewById(R.id.drawer_layout)
-        val customDrawerMenu: LinearLayout = findViewById(R.id.custom_drawer_menu)
-        val menuItemsContainer: LinearLayout = findViewById(R.id.menu_items_container)
-        val headerImage: ImageView = customDrawerMenu.findViewById(R.id.header_image)
+
+        val customDrawerMenu = findViewById<LinearLayout>(R.id.custom_drawer_menu)
+        val headerImage = customDrawerMenu.findViewById<ImageView>(R.id.header_image)
 
         headerImage.setOnClickListener {
             openUrl(Constants.BASE_URL)
         }
 
+        val menuItemsContainer = findViewById<LinearLayout>(R.id.menu_items_container)
         val menuItems = listOf(
             MenuItem("Информация", InfoFragment::class.java, R.drawable.ic_info_white_24dp),
             MenuItem("Новости", NewsFragment::class.java, R.drawable.ic_news_white_24dp),
@@ -73,6 +74,32 @@ class MainActivity : AppCompatActivity() {
             menuItemsContainer.addView(menuItemView)
         }
 
+        val btnWebsite = findViewById<LinearLayout>(R.id.btn_website)
+        val btnSteam = findViewById<LinearLayout>(R.id.btn_steam)
+        val btnDiscord = findViewById<LinearLayout>(R.id.btn_discord)
+        val btnTelegram = findViewById<LinearLayout>(R.id.btn_telegram)
+
+        btnWebsite.setOnClickListener {
+            openUrl("http://79.173.124.221:2000")
+        }
+
+        btnSteam.setOnClickListener {
+            openUrl("https://steamcommunity.com/groups/7DTDLukomorie")
+        }
+
+        btnDiscord.setOnClickListener {
+            openUrl("https://discord.gg/vsDTxhsJBK")
+        }
+
+        btnTelegram.setOnClickListener {
+            openUrl("https://t.me/+Hz0eQrmP0Wg1ZGMy")
+        }
+
+        setupBottomMenuButton(btnWebsite, R.drawable.internet, "Страничка сервера")
+        setupBottomMenuButton(btnSteam, R.drawable.steam, "Группа Steam")
+        setupBottomMenuButton(btnDiscord, R.drawable.discord, "Discord")
+        setupBottomMenuButton(btnTelegram, R.drawable.telegram, "Telegram")
+
         val fabToggle = findViewById<ImageButton>(R.id.fab_drawer_toggle)
         fabToggle.setOnClickListener {
             if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -86,6 +113,13 @@ class MainActivity : AppCompatActivity() {
 
         val firstFragment = InfoFragment()
         loadFragment(firstFragment)
+    }
+
+    private fun setupBottomMenuButton(button: LinearLayout, iconResId: Int, title: String) {
+        val icon: ImageView = button.findViewById(R.id.menu_item_icon)
+        val text: TextView = button.findViewById(R.id.menu_item_title)
+        icon.setImageResource(iconResId)
+        text.text = title
     }
 
     private fun openUrl(url: String) {
