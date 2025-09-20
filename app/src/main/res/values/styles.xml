@@ -3,4 +3,18 @@
     <style name="Theme.7DTD_Lukomorie" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Цвета и параметры темы -->
     </style>
+
+    <style name="NavDrawerText" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="CustomNavigationView" parent="Widget.Design.NavigationView">
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="elevation">0dp</item>
+        <item name="itemHorizontalPadding">8dp</item>
+    </style>
 </resources>
