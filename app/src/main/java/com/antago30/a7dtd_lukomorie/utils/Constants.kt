@@ -6,5 +6,5 @@ object Constants {
     const val INFO_URL = "$BASE_URL/info.php"
     const val NEWS_URL = "$BASE_URL/news.php?page=-1"
     const val LEADERBOARD_URL = "$BASE_URL/leaderboard.php?page=-1"
-    const val VISITORS_URL = "$BASE_URL/visitors.html"
+    const val VISITORS_URL = "$BASE_URL/visitorstodaylist.php?page=1"
 }

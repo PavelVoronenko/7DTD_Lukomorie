@@ -4,6 +4,7 @@ import android.util.Log
 import com.antago30.a7dtd_lukomorie.model.NewsItem
 import com.antago30.a7dtd_lukomorie.model.PlayerItem
 import com.antago30.a7dtd_lukomorie.model.ServerInfo
+import com.antago30.a7dtd_lukomorie.model.VisitorItem
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
@@ -209,9 +210,37 @@ class WebParser {
     }
 
     @Throws(IOException::class)
-    fun parseVisitors(url: String): Int {
-        val document = Jsoup.connect(url).get()
-        val text = document.select("span.visitors-count").first()?.text() ?: "0"
-        return text.toIntOrNull() ?: 0
+    fun parseVisitors(url: String): List<VisitorItem> {
+        val document = Jsoup.connect(url)
+            .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+            .timeout(15000)
+            .get()
+
+        val visitors = mutableListOf<VisitorItem>()
+        val table = document.select("table").firstOrNull() ?: return emptyList()
+
+
+        val rows = table.select("tr").drop(1)
+        for (row in rows) {
+            val cells = row.select("td")
+            if (cells.size >= 2) {
+                try {
+                    val nameElement = cells[0].selectFirst("a")
+                    val name = nameElement?.text()?.trim() ?: cells[0].text().trim()
+                    val time = cells[1].text().trim()
+
+                    visitors.add(
+                        VisitorItem(
+                            name = name,
+                            time = time
+                        )
+                    )
+                } catch (e: Exception) {
+                    Log.w("WebParser", "Ошибка парсинга строки посетителя: ${row.text()}", e)
+                }
+            }
+        }
+
+        return visitors
     }
 }
