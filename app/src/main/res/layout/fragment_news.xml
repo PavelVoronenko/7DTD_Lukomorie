@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0a0a0a">
+    android:background="@drawable/background_second">
 
     <!-- 👇 Улучшенный заголовок -->
     <TextView
@@ -13,15 +13,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:drawableStart="@drawable/ic_news_white_24dp"
-    android:drawablePadding="8dp"
-    android:gravity="center"
-    android:text="Новости сервера"
-    android:textColor="@android:color/white"
-    android:textSize="26sp"
-    android:textStyle="bold"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+        android:drawablePadding="8dp"
+        android:gravity="center"
+        android:text="Новости сервера"
+        android:textColor="@android:color/white"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- 👇 Обновленный RecyclerView с фоном и отступами -->
     <androidx.recyclerview.widget.RecyclerView
@@ -56,8 +56,8 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_news_grey_24dp"
-        android:alpha="0.6"/>
+            android:alpha="0.6"
+            android:src="@drawable/ic_news_grey_24dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -68,11 +68,11 @@
 
         <Button
             android:id="@+id/reload_news_button"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Обновить"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+            android:text="Обновить" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

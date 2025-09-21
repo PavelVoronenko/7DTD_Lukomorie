@@ -24,7 +24,10 @@
             android:layout_gravity="start"
             android:background="@drawable/menu_background"
             android:elevation="8dp"
+            android:outlineProvider="background"
+            android:clipToOutline="true"
             android:orientation="vertical">
+
 
             <include layout="@layout/drawer_header" />
 
@@ -47,12 +50,15 @@
                 <include
                     android:id="@+id/btn_discord"
                     layout="@layout/drawer_menu_item_bottom" />
+
                 <include
                     android:id="@+id/btn_telegram"
                     layout="@layout/drawer_menu_item_bottom" />
+
                 <include
                     android:id="@+id/btn_steam"
                     layout="@layout/drawer_menu_item_bottom" />
+
                 <include
                     android:id="@+id/btn_website"
                     layout="@layout/drawer_menu_item_bottom" />

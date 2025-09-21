@@ -4,17 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="3dp"
-    app:strokeWidth="0.5dp"
-    app:strokeColor="@android:color/darker_gray"
-    android:foreground="?attr/selectableItemBackground"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="2dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="407dp"
+        android:layout_height="match_parent"
+        android:hapticFeedbackEnabled="true"
         android:orientation="vertical"
         android:padding="12dp">
 
@@ -33,22 +34,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:linksClickable="true"
-            android:focusable="true"
             android:clickable="true"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="14sp"
+            android:ellipsize="end"
+            android:focusable="true"
+            android:linksClickable="true"
             android:maxLines="4"
-            android:ellipsize="end" />
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/news_timestamp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="end"
             android:textColor="@android:color/holo_blue_dark"
-            android:gravity="end" />
+            android:textSize="12sp" />
 
     </LinearLayout>
 

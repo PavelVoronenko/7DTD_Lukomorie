@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
-    app:cardBackgroundColor="#1e1e1e"
+    app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    app:cardElevation="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,14 +21,14 @@
             android:layout_weight="2"
             android:textColor="@android:color/white"
             android:textSize="16sp"
-            android:textStyle="bold" />
+             />
 
         <TextView
             android:id="@+id/visitor_time"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="end"
             android:textColor="@android:color/holo_blue_light"
             android:textSize="14sp" />
 

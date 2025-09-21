@@ -1,16 +1,26 @@
 package com.antago30.a7dtd_lukomorie.fragments
 
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.antago30.a7dtd_lukomorie.R
 import com.antago30.a7dtd_lukomorie.logic.BloodMoonCalculator
 import com.antago30.a7dtd_lukomorie.model.ServerInfo
 import com.antago30.a7dtd_lukomorie.utils.Constants
-import java.time.LocalDateTime
+import android.widget.AutoCompleteTextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import com.google.android.material.switchmaterial.SwitchMaterial
+import androidx.core.graphics.toColorInt
+import androidx.core.view.ViewCompat
+
 
 class InfoFragment : BaseFragment() {
 
@@ -27,11 +37,39 @@ class InfoFragment : BaseFragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_info, container, false)
 
-        statusText = view.findViewById(R.id.status_text)
-        timeText = view.findViewById(R.id.time_text)
-        dayText = view.findViewById(R.id.day_text)
-        playersOnlineText = view.findViewById(R.id.players_online_text)
-        nextBloodMoonText = view.findViewById(R.id.next_blood_moon_text)
+        statusText = view.findViewById(R.id.status_value)
+        timeText = view.findViewById(R.id.time_value)
+        dayText = view.findViewById(R.id.day_value)
+        playersOnlineText = view.findViewById(R.id.players_value)
+        nextBloodMoonText = view.findViewById(R.id.blood_moon_value)
+
+        val dropdown = view.findViewById<AutoCompleteTextView>(R.id.reminder_dropdown)
+        val items = resources.getStringArray(R.array.reminder_times)
+        val adapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, items)
+        dropdown.setAdapter(adapter)
+
+        dropdown.setOnItemClickListener { parent, _, position, _ ->
+            val selected = parent.getItemAtPosition(position).toString()
+            Log.d("Reminder", "Выбрано: $selected")
+            // Сохраните значение, если нужно
+        }
+
+        val switch = view.findViewById<SwitchMaterial>(R.id.reminder_switch)
+
+
+        switch.trackTintList = ColorStateList.valueOf("#666666".toColorInt())
+
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            switch.thumbTintList = ColorStateList.valueOf(
+                if (isChecked) "#00FF00".toColorInt()
+                else "#FF0000".toColorInt()
+            )
+            Toast.makeText(
+                context,
+                if (isChecked) "Напоминание включено" else "Напоминание выключено",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
 
         return view
     }
@@ -47,10 +85,15 @@ class InfoFragment : BaseFragment() {
 
     override fun updateUI(data: Any) {
         if (data is ServerInfo) {
-            statusText.text = "Статус: ${if (data.status == "в сети.") "Online" else "Offline"}"
-            timeText.text = "Время: ${data.time}"
-            dayText.text = "День: ${data.day}"
-            playersOnlineText.text = "Онлайн: ${data.playersOnline}"
+            statusText.text = "${if (data.status == "в сети.") "Online" else "Offline"}"
+            timeText.text = "${data.time}"
+            if (data.day % 7 == 0) {
+                dayText.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_red_light))
+            } else {
+                dayText.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_orange_light))
+            }
+            dayText.text = "${data.day}"
+            playersOnlineText.text = "${data.playersOnline}"
 
             try {
                 val calculator = BloodMoonCalculator()
@@ -59,7 +102,7 @@ class InfoFragment : BaseFragment() {
                     currentGameTime = data.time
                 )
                 val formattedDate = calculator.formatDateTime(nextBloodMoonDateTime)
-                nextBloodMoonText.text = "След. кровавая луна: $formattedDate"
+                nextBloodMoonText.text = "$formattedDate"
                 nextBloodMoonText.visibility = View.VISIBLE
             } catch (e: Exception) {
                 Log.e("InfoFragment", "Ошибка вычисления луны", e)

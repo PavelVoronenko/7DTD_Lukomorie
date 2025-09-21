@@ -41,12 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         drawerLayout = findViewById(R.id.drawer_layout)
 
-        val customDrawerMenu = findViewById<LinearLayout>(R.id.custom_drawer_menu)
-        val headerImage = customDrawerMenu.findViewById<ImageView>(R.id.header_image)
-
-        headerImage.setOnClickListener {
-            openUrl(Constants.BASE_URL)
-        }
+        //val customDrawerMenu = findViewById<LinearLayout>(R.id.custom_drawer_menu)
 
         val menuItemsContainer = findViewById<LinearLayout>(R.id.menu_items_container)
         val menuItems = listOf(

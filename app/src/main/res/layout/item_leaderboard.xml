@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp"
-    app:cardBackgroundColor="#1e1e1e">
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,63 +18,107 @@
         android:orientation="vertical"
         android:padding="12dp">
 
-        <TextView
-            android:id="@+id/player_name"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="Имя игрока"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/player_level"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Уровень: 120"
-            android:textColor="@android:color/holo_blue_light"
-            android:textSize="16sp"
-            android:layout_marginTop="4dp" />
+            <TextView
+                android:id="@+id/player_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Имя игрока"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="visible" />
 
-        <TextView
-            android:id="@+id/player_deaths"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Смертей: 0"
-            android:textColor="@android:color/holo_red_light"
-            android:textSize="14sp"
-            android:layout_marginTop="2dp" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/zombies_killed"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Убито зомби: 9332"
-            android:textColor="@android:color/holo_green_light"
-            android:textSize="14sp"
-            android:layout_marginTop="2dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp">
 
-        <TextView
-            android:id="@+id/players_killed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Убито игроков: 0"
-            android:textColor="@android:color/holo_orange_light"
-            android:textSize="14sp"
-            android:layout_marginTop="2dp" />
+            <TextView
+                android:id="@+id/player_level"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Уровень: 120"
+                android:textColor="@android:color/holo_blue_light"
+                android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/total_score"
+            <TextView
+                android:id="@+id/zombies_killed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Убито зомби: 9332"
+                android:textColor="@android:color/holo_green_light"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Всего очков: 9328"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"
-            android:gravity="end" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="2dp">
+
+            <TextView
+                android:id="@+id/player_deaths"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Смертей: 0"
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/players_killed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Убито игроков: 0"
+                android:textColor="@android:color/holo_orange_light"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="2dp">
+
+            <TextView
+                android:id="@+id/invisible"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Уровень: 120"
+                android:textColor="@android:color/holo_blue_light"
+                android:textSize="16sp"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/total_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="Всего очков: 9328"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

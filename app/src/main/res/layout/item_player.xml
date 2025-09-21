@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:strokeColor="#333333"
+    app:strokeWidth="0dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
-    app:cardBackgroundColor="#1e1e1e"
+    app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="8dp"
-    app:cardElevation="1dp"
-    app:strokeColor="#333333"
-    app:strokeWidth="0.5dp">
+    app:cardElevation="0dp">
 
     <TableRow
         android:layout_width="match_parent"
@@ -19,7 +19,6 @@
         android:paddingEnd="4dp"
         android:stretchColumns="*">
 
-        <!-- Имя игрока -->
         <TextView
             android:id="@+id/player_name"
             android:layout_width="0dp"
@@ -33,7 +32,6 @@
             android:textSize="14sp"
             android:textStyle="bold" />
 
-        <!-- Уровень -->
         <TextView
             android:id="@+id/player_level"
             android:layout_width="0dp"
@@ -43,9 +41,8 @@
             android:padding="4dp"
             android:textColor="@android:color/holo_blue_light"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            />
 
-        <!-- Смерти -->
         <TextView
             android:id="@+id/player_deaths"
             android:layout_width="0dp"
@@ -56,7 +53,6 @@
             android:textColor="@android:color/holo_red_light"
             android:textSize="14sp" />
 
-        <!-- Убито зомби -->
         <TextView
             android:id="@+id/zombies_killed"
             android:layout_width="0dp"

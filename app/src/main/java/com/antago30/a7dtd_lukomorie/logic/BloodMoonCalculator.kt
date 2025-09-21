@@ -101,6 +101,6 @@ class BloodMoonCalculator(
      * Форматирует LocalDateTime в строку.
      */
     fun formatDateTime(dateTime: LocalDateTime): String {
-        return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))
+        return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
     }
 }
