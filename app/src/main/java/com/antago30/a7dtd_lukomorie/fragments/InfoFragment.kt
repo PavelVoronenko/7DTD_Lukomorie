@@ -47,7 +47,7 @@ class InfoFragment : BaseFragment() {
 
     override fun updateUI(data: Any) {
         if (data is ServerInfo) {
-            statusText.text = "Статус: ${data.status}"
+            statusText.text = "Статус: ${if (data.status == "в сети.") "Online" else "Offline"}"
             timeText.text = "Время: ${data.time}"
             dayText.text = "День: ${data.day}"
             playersOnlineText.text = "Онлайн: ${data.playersOnline}"
