@@ -20,7 +20,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.drawerlayout.widget.DrawerLayout
-import com.antago30.a7dtd_lukomorie.utils.Constants
 import android.widget.LinearLayout
 
 class MainActivity : AppCompatActivity() {
@@ -40,8 +39,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         drawerLayout = findViewById(R.id.drawer_layout)
-
-        //val customDrawerMenu = findViewById<LinearLayout>(R.id.custom_drawer_menu)
 
         val menuItemsContainer = findViewById<LinearLayout>(R.id.menu_items_container)
         val menuItems = listOf(

@@ -50,8 +50,6 @@ class InfoFragment : BaseFragment() {
 
         dropdown.setOnItemClickListener { parent, _, position, _ ->
             val selected = parent.getItemAtPosition(position).toString()
-            Log.d("Reminder", "Выбрано: $selected")
-            // Сохраните значение, если нужно
         }
 
         val switch = view.findViewById<SwitchMaterial>(R.id.reminder_switch)

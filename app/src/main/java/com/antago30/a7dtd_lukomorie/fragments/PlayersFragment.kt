@@ -1,7 +1,6 @@
 package com.antago30.a7dtd_lukomorie.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,10 +34,8 @@ class PlayersFragment : BaseFragment() {
 
     override fun loadData(): Any {
         return try {
-            Log.d("PlayersOnlineFragment", "Загрузка списка игроков...")
-            webParser.parseOnlinePlayers(Constants.PLAYERS_URL) // Добавь в Constants
+            webParser.parseOnlinePlayers(Constants.PLAYERS_URL)
         } catch (e: Exception) {
-            Log.e("PlayersOnlineFragment", "Ошибка загрузки игроков", e)
             emptyList<PlayerItem>()
         }
     }
@@ -47,7 +44,6 @@ class PlayersFragment : BaseFragment() {
         if (data is List<*>) {
             @Suppress("UNCHECKED_CAST")
             val playerList = data as List<PlayerItem>
-            Log.d("PlayersOnlineFragment", "Получено ${playerList.size} игроков")
 
             if (playerList.isEmpty()) {
                 recyclerView.visibility = View.GONE

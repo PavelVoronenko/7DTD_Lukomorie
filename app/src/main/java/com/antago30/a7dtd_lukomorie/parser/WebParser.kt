@@ -25,7 +25,6 @@ class WebParser {
         val players = mutableListOf<PlayerItem>()
         val table = document.select("table").firstOrNull() ?: return emptyList()
 
-        // Пропускаем заголовок (первую строку)
         val rows = table.select("tr").drop(1)
         for (row in rows) {
             val cells = row.select("td")

@@ -58,11 +58,9 @@ class NewsFragment : BaseFragment() {
             val newsList = data as List<NewsItem>
 
             if (newsList.isEmpty()) {
-                // Если список пустой, показываем пустое состояние
                 recyclerView.visibility = View.GONE
                 emptyStateLayout.visibility = View.VISIBLE
             } else {
-                // Если есть новости, показываем список и скрываем пустое состояние
                 recyclerView.visibility = View.VISIBLE
                 emptyStateLayout.visibility = View.GONE
                 adapter.updateData(newsList)
