@@ -1,25 +1,26 @@
 package com.antago30.a7dtd_lukomorie.fragments
 
+import android.animation.ValueAnimator
 import android.content.res.ColorStateList
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.antago30.a7dtd_lukomorie.R
 import com.antago30.a7dtd_lukomorie.logic.BloodMoonCalculator
 import com.antago30.a7dtd_lukomorie.model.ServerInfo
 import com.antago30.a7dtd_lukomorie.utils.Constants
-import android.widget.AutoCompleteTextView
+import android.widget.Spinner
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.material.switchmaterial.SwitchMaterial
 import androidx.core.graphics.toColorInt
-import androidx.core.view.ViewCompat
+import android.view.animation.AccelerateDecelerateInterpolator
 
 
 class InfoFragment : BaseFragment() {
@@ -43,17 +44,27 @@ class InfoFragment : BaseFragment() {
         playersOnlineText = view.findViewById(R.id.players_value)
         nextBloodMoonText = view.findViewById(R.id.blood_moon_value)
 
-        val dropdown = view.findViewById<AutoCompleteTextView>(R.id.reminder_dropdown)
-        val items = resources.getStringArray(R.array.reminder_times)
-        val adapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, items)
-        dropdown.setAdapter(adapter)
+        val spinnerReminder = view.findViewById<Spinner>(R.id.spinner_reminder)
 
-        dropdown.setOnItemClickListener { parent, _, position, _ ->
-            val selected = parent.getItemAtPosition(position).toString()
+        val adapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.reminder_times,
+            android.R.layout.simple_spinner_item
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerReminder.adapter = adapter
+
+        spinnerReminder.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selected = parent.getItemAtPosition(position).toString()
+                // Действие при выборе
+                //Toast.makeText(context, "Выбрано: $selected", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        val switch = view.findViewById<SwitchMaterial>(R.id.reminder_switch)
-
+        val switch = view.findViewById<SwitchMaterial>(R.id.switch_reminder)
 
         switch.trackTintList = ColorStateList.valueOf("#666666".toColorInt())
 
@@ -68,6 +79,22 @@ class InfoFragment : BaseFragment() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+
+        val timer = view.findViewById<CircularProgressIndicator>(R.id.circular_timer)
+
+        // Убираем неопределённый режим
+        timer.isIndeterminate = false
+
+        val animator = ValueAnimator.ofInt(0, 85)
+        animator.duration = 2000 // 2 секунды
+        animator.interpolator = AccelerateDecelerateInterpolator()
+
+        animator.addUpdateListener { animation ->
+            val progress = animation.animatedValue as Int
+            timer.progress = progress
+        }
+
+        animator.start()
 
         return view
     }

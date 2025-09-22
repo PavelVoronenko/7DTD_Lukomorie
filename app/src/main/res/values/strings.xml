@@ -1,9 +1,3 @@
 <resources>
     <string name="app_name">7DTD_Lukomorie</string>
-    <string-array name="reminder_times">
-        <item>15 мин</item>
-        <item>30 мин</item>
-        <item>1 час</item>
-        <item>2 часа</item>
-    </string-array>
 </resources>
