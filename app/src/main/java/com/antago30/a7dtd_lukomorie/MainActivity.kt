@@ -94,6 +94,12 @@ class MainActivity : AppCompatActivity() {
         setupBottomMenuButton(btnDiscord, R.drawable.discord, "Discord")
         setupBottomMenuButton(btnTelegram, R.drawable.telegram, "Telegram")
 
+        val fabHome = findViewById<ImageButton>(R.id.fab_home)
+        fabHome.setOnClickListener {
+            val infoFragment = InfoFragment()
+            loadFragment(infoFragment)
+        }
+
         val fabToggle = findViewById<ImageButton>(R.id.fab_drawer_toggle)
         fabToggle.setOnClickListener {
             if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
