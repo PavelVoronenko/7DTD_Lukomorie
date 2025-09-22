@@ -21,6 +21,7 @@ import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.drawerlayout.widget.DrawerLayout
 import android.widget.LinearLayout
+import com.antago30.a7dtd_lukomorie.fragments.BanListFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         val menuItems = listOf(
             MenuItem("Информация", InfoFragment::class.java, R.drawable.ic_info_white_24dp),
             MenuItem("Новости", NewsFragment::class.java, R.drawable.ic_news_white_24dp),
+            MenuItem("Бан-лист", BanListFragment::class.java, R.drawable.ic_ban_white_24dp),
             MenuItem("Игроки онлайн", PlayersFragment::class.java, R.drawable.ic_people_white_24dp),
             MenuItem("Лидеры сервера", LeaderboardFragment::class.java, R.drawable.ic_leaderboard_white_24dp),
             MenuItem("Посетители за сутки", VisitorsFragment::class.java, R.drawable.ic_visitors_white_24dp)

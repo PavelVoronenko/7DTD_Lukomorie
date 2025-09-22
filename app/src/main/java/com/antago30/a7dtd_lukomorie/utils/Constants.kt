@@ -7,4 +7,5 @@ object Constants {
     const val NEWS_URL = "$BASE_URL/news.php?page=-1"
     const val LEADERBOARD_URL = "$BASE_URL/leaderboard.php?page=-1"
     const val VISITORS_URL = "$BASE_URL/visitorstodaylist.php?page=1"
+    const val BAN_LIST_URL = "$BASE_URL/banlist.php?page=-1"
 }

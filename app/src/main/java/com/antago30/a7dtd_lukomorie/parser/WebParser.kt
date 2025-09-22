@@ -1,6 +1,7 @@
 package com.antago30.a7dtd_lukomorie.parser
 
 import android.util.Log
+import com.antago30.a7dtd_lukomorie.model.BannedPlayer
 import com.antago30.a7dtd_lukomorie.model.NewsItem
 import com.antago30.a7dtd_lukomorie.model.PlayerItem
 import com.antago30.a7dtd_lukomorie.model.ServerInfo
@@ -241,5 +242,35 @@ class WebParser {
         }
 
         return visitors
+    }
+
+    @Throws(IOException::class)
+    fun parseBanList(url: String): List<BannedPlayer> {
+        val document = Jsoup.connect(url)
+            .userAgent("Mozilla/5.0")
+            .timeout(15000)
+            .get()
+
+        val bannedPlayers = mutableListOf<BannedPlayer>()
+        val table = document.select("table").firstOrNull() ?: return emptyList()
+
+        val rows = table.select("tr").drop(1)
+
+        for (row in rows) {
+            val cells = row.select("td")
+            if (cells.size >= 3) {
+                try {
+                    val nickname = cells[0].text().trim()
+                    val unbanDate = cells[1].text().trim()
+                    val reason = cells[2].text().trim()
+
+                    bannedPlayers.add(BannedPlayer(nickname, unbanDate, reason))
+                } catch (e: Exception) {
+                    Log.w("WebParser", "Ошибка парсинга строки бан-листа: ${row.text()}", e)
+                }
+            }
+        }
+
+        return bannedPlayers
     }
 }
