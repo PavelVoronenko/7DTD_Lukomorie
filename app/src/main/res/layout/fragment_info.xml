@@ -314,7 +314,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/spinner_reminder"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:thumbTint="#D32F2F"
+                    app:thumbTint="#FF0000"
                     app:trackTint="#5D1E1E" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

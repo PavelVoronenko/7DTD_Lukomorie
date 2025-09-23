@@ -2,6 +2,7 @@ package com.antago30.a7dtd_lukomorie.logic
 
 import android.graphics.Color
 import android.widget.TextView
+import com.antago30.a7dtd_lukomorie.R
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -70,7 +71,7 @@ class BloodMoonTimerController(
                 circularTimer.setIndicatorColor(
                     if (isBloodMoonNow) Color.RED
                     else when {
-                        progress > 60 -> Color.RED
+                        progress > 60 -> R.color.red
                         progress > 30 -> Color.YELLOW
                         else -> Color.GREEN
                     }

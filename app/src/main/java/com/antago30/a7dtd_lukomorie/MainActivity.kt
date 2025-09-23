@@ -1,27 +1,22 @@
 package com.antago30.a7dtd_lukomorie
 
 import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import com.antago30.a7dtd_lukomorie.fragments.InfoFragment
-import com.antago30.a7dtd_lukomorie.fragments.LeaderboardFragment
-import com.antago30.a7dtd_lukomorie.fragments.NewsFragment
-import com.antago30.a7dtd_lukomorie.fragments.PlayersFragment
-import com.antago30.a7dtd_lukomorie.fragments.VisitorsFragment
-import com.antago30.a7dtd_lukomorie.model.MenuItem
-import android.widget.ImageButton
+import android.widget.Toast
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
-import androidx.core.view.GravityCompat
-import android.content.Intent
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import com.antago30.a7dtd_lukomorie.fragments.*
+import com.antago30.a7dtd_lukomorie.model.MenuItem
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
-import com.antago30.a7dtd_lukomorie.fragments.BanListFragment
+import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
 
@@ -133,10 +128,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-            /*.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)*/
             .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
             .replace(R.id.content_frame, fragment)
-            /*.addToBackStack(null)*/
             .commit()
     }
 }

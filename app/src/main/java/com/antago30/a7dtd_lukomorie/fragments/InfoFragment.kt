@@ -1,6 +1,5 @@
 package com.antago30.a7dtd_lukomorie.fragments
 
-import com.antago30.a7dtd_lukomorie.logic.BloodMoonProgressTimer
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
@@ -10,17 +9,19 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 import com.antago30.a7dtd_lukomorie.R
 import com.antago30.a7dtd_lukomorie.logic.BloodMoonCalculator
+import com.antago30.a7dtd_lukomorie.logic.BloodMoonProgressTimer
+import com.antago30.a7dtd_lukomorie.logic.BloodMoonTimerController
+import com.antago30.a7dtd_lukomorie.logic.BloodMoonReminderManager
 import com.antago30.a7dtd_lukomorie.model.ServerInfo
 import com.antago30.a7dtd_lukomorie.utils.Constants
-import com.antago30.a7dtd_lukomorie.logic.BloodMoonTimerController
+import com.google.android.material.switchmaterial.SwitchMaterial
 import java.time.LocalDateTime
 import android.widget.Spinner
-import android.widget.Toast
-import com.google.android.material.switchmaterial.SwitchMaterial
-import androidx.core.graphics.toColorInt
 
 class InfoFragment : BaseFragment() {
 
@@ -29,9 +30,11 @@ class InfoFragment : BaseFragment() {
     private lateinit var dayText: TextView
     private lateinit var playersOnlineText: TextView
     private lateinit var nextBloodMoonText: TextView
-
+    private lateinit var spinnerReminder: Spinner
+    private lateinit var switchReminder: SwitchMaterial
     private var bloodMoonTimer: BloodMoonProgressTimer? = null
     private var timerController: BloodMoonTimerController? = null
+    private lateinit var reminderManager: BloodMoonReminderManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,9 +48,13 @@ class InfoFragment : BaseFragment() {
         dayText = view.findViewById(R.id.day_value)
         playersOnlineText = view.findViewById(R.id.players_value)
         nextBloodMoonText = view.findViewById(R.id.blood_moon_value)
+        spinnerReminder = view.findViewById(R.id.spinner_reminder)
+        switchReminder = view.findViewById(R.id.switch_reminder)
 
-        // Инициализация спиннера
-        val spinnerReminder = view.findViewById<Spinner>(R.id.spinner_reminder)
+        // Инициализация менеджера напоминаний
+        reminderManager = BloodMoonReminderManager(requireContext())
+
+        // Настройка спиннера
         val adapter = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.reminder_times,
@@ -56,29 +63,89 @@ class InfoFragment : BaseFragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerReminder.adapter = adapter
 
+        // Восстанавливаем СОХРАНЁННОЕ ВРЕМЯ и устанавливаем позицию спиннера
+        val savedMinutes = reminderManager.getSavedReminderMinutes()
+        val minutesArray = resources.getStringArray(R.array.reminder_times)
+        val position = when (savedMinutes) {
+            15 -> 0
+            30 -> 1
+            60 -> 2
+            120 -> 3
+            else -> 0
+        }
+        spinnerReminder.setSelection(position)
+
+        // Обработчик выбора времени
         spinnerReminder.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selected = parent.getItemAtPosition(position).toString()
+                if (switchReminder.isChecked) {
+                    cachedNextBloodMoonDateTime?.let { nextBloodMoonTime ->
+                        val minutes = parseMinutesFromSpinner(position)
+                        reminderManager.cancelReminder()
+                        reminderManager.scheduleReminder(nextBloodMoonTime, minutes) {
+                            Toast.makeText(context, "Напоминание обновлено!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        // Инициализация переключателя
-        val switch = view.findViewById<SwitchMaterial>(R.id.switch_reminder)
-        switch.trackTintList = ColorStateList.valueOf("#666666".toColorInt())
-        switch.setOnCheckedChangeListener { _, isChecked ->
-            switch.thumbTintList = ColorStateList.valueOf(
+        // Настройка переключателя
+        switchReminder.trackTintList = ColorStateList.valueOf("#666666".toColorInt())
+        switchReminder.setOnCheckedChangeListener { _, isChecked ->
+            switchReminder.thumbTintList = ColorStateList.valueOf(
                 if (isChecked) "#00FF00".toColorInt() else "#FF0000".toColorInt()
             )
-            Toast.makeText(
-                context,
-                if (isChecked) "Напоминание включено" else "Напоминание выключено",
-                Toast.LENGTH_SHORT
-            ).show()
+
+            if (isChecked) {
+                cachedNextBloodMoonDateTime?.let { nextBloodMoonTime ->
+                    val position = spinnerReminder.selectedItemPosition
+                    val minutes = parseMinutesFromSpinner(position)
+                    reminderManager.scheduleReminder(nextBloodMoonTime, minutes) {
+                        Toast.makeText(context, "Напоминание установлено!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } else {
+                reminderManager.cancelReminder()
+                Toast.makeText(context, "Напоминание отключено", Toast.LENGTH_SHORT).show()
+            }
         }
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Восстанавливаем состояние переключателя
+        if (reminderManager.shouldAutoDisable()) {
+            switchReminder.isChecked = false
+            reminderManager.cancelReminder()
+        } else if (reminderManager.isReminderActive()) {
+            switchReminder.isChecked = true
+            // Дополнительно: если активно — убеждаемся, что спиннер в правильной позиции
+            val savedMinutes = reminderManager.getSavedReminderMinutes()
+            val position = when (savedMinutes) {
+                15 -> 0
+                30 -> 1
+                60 -> 2
+                120 -> 3
+                else -> 0
+            }
+            spinnerReminder.setSelection(position)
+        }
+    }
+
+    private fun parseMinutesFromSpinner(position: Int): Int {
+        return when (position) {
+            0 -> 15
+            1 -> 30
+            2 -> 60
+            3 -> 120
+            else -> 15
+        }
     }
 
     override fun loadData(): Any {
@@ -121,6 +188,13 @@ class InfoFragment : BaseFragment() {
             nextBloodMoonText.text = calculator.formatDateTime(nextBloodMoonDateTime)
             nextBloodMoonText.visibility = View.VISIBLE
             cachedNextBloodMoonDateTime = nextBloodMoonDateTime
+
+            if (switchReminder.isChecked) {
+                val position = spinnerReminder.selectedItemPosition
+                val minutes = parseMinutesFromSpinner(position)
+                reminderManager.cancelReminder()
+                reminderManager.scheduleReminder(nextBloodMoonDateTime, minutes) {}
+            }
         } catch (e: Exception) {
             Log.e("InfoFragment", "Ошибка вычисления луны", e)
             nextBloodMoonText.text = "Ошибка: Не удалось вычислить луну"

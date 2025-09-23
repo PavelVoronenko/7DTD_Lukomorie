@@ -11,5 +11,6 @@
     <color name="lukomorie_red_dark">#5D1E1E</color>
     <color name="switch_thumb_on">#D32F2F</color>
     <color name="switch_track_off">#424242</color>
+    <color name="red">#FF0000</color>
 
 </resources>
