@@ -234,7 +234,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/adlam_display"
-                    android:text="13:09:35"
                     android:textColor="#FFFFFF"
                     android:textSize="24sp"
                     app:layout_constraintBottom_toBottomOf="@+id/circular_timer"
