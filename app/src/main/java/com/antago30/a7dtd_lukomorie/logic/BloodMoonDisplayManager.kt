@@ -1,14 +1,12 @@
 package com.antago30.a7dtd_lukomorie.logic
 
-import android.graphics.Color
 import android.widget.TextView
-import com.antago30.a7dtd_lukomorie.R
+import com.antago30.a7dtd_lukomorie.logic.timer.BloodMoonProgressTimer
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.Locale
 
-class BloodMoonTimerController(
+class BloodMoonDisplayManager(
     private val circularTimer: CircularProgressIndicator,
     private val timerText: TextView,
     private val previousBloodMoon: LocalDateTime,
@@ -21,7 +19,6 @@ class BloodMoonTimerController(
 
     private val bloodMoonEnd = nextBloodMoon.plusHours(BLOOD_MOON_DURATION_HOURS)
 
-    //статичное состояние (для 0 игроков)
     fun updateStaticState() {
         val now = LocalDateTime.now()
         val isBloodMoonActive = now.isAfter(nextBloodMoon) && now.isBefore(bloodMoonEnd)
@@ -43,22 +40,21 @@ class BloodMoonTimerController(
         val hours = remainingMillis / (1000 * 60 * 60)
         val minutes = (remainingMillis / (1000 * 60)) % 60
         val seconds = (remainingMillis / 1000) % 60
-        timerText.text = String.format(Locale.ROOT, "%02d:%02d:%02d", hours, minutes, seconds)
+        timerText.text = String.format(java.util.Locale.ROOT, "%02d:%02d:%02d", hours, minutes, seconds)
 
         circularTimer.progress = progress
         circularTimer.setIndicatorColor(
-            if (isBloodMoonActive) Color.RED
+            if (isBloodMoonActive) android.graphics.Color.RED
             else when {
-                progress > 60 -> Color.RED
-                progress > 30 -> Color.YELLOW
-                else -> Color.GREEN
+                progress > 60 -> android.graphics.Color.RED
+                progress > 30 -> android.graphics.Color.YELLOW
+                else -> android.graphics.Color.GREEN
             }
         )
     }
 
-    //Запускает таймер (для игроков > 0)
     fun startDynamicTimer(
-        onTimerStop: () -> Unit,
+        onTimerStop: () -> Unit
     ): BloodMoonProgressTimer {
         onTimerStop()
 
@@ -69,17 +65,17 @@ class BloodMoonTimerController(
                 circularTimer.progress = progress
                 timerText.text = timeFormatted
                 circularTimer.setIndicatorColor(
-                    if (isBloodMoonNow) Color.RED
+                    if (isBloodMoonNow) android.graphics.Color.RED
                     else when {
-                        progress > 60 -> R.color.red
-                        progress > 30 -> Color.YELLOW
-                        else -> Color.GREEN
+                        progress > 60 -> android.graphics.Color.RED
+                        progress > 30 -> android.graphics.Color.YELLOW
+                        else -> android.graphics.Color.GREEN
                     }
                 )
             },
             onFinish = {
                 timerText.text = "Луна началась! 🌕"
-                circularTimer.setIndicatorColor(Color.RED)
+                circularTimer.setIndicatorColor(android.graphics.Color.RED)
                 circularTimer.progress = 100
             }
         ).apply { start() }

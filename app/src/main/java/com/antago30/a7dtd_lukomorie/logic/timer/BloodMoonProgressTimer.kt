@@ -1,4 +1,4 @@
-package com.antago30.a7dtd_lukomorie.logic
+package com.antago30.a7dtd_lukomorie.logic.timer
 
 import android.os.Handler
 import android.os.Looper
@@ -52,7 +52,7 @@ class BloodMoonProgressTimer(
             val hours = remainingMillis / (1000 * 60 * 60)
             val minutes = (remainingMillis / (1000 * 60)) % 60
             val seconds = (remainingMillis / 1000) % 60
-            val timeFormatted = String.format(Locale.ROOT, "%02d:%02d:%02d", hours, minutes, seconds)
+            val timeFormatted = String.Companion.format(Locale.ROOT, "%02d:%02d:%02d", hours, minutes, seconds)
 
             onTick(progress, timeFormatted, isBloodMoonActive)
             handler.postDelayed(this, updateInterval)

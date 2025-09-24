@@ -1,4 +1,4 @@
-package com.antago30.a7dtd_lukomorie.logic
+package com.antago30.a7dtd_lukomorie.receivers
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -6,12 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.antago30.a7dtd_lukomorie.receivers.BloodMoonReminderReceiver
+import androidx.core.content.edit
 import java.time.LocalDateTime
 import java.time.ZoneId
-import androidx.core.content.edit
 
-class BloodMoonReminderManager(private val context: Context) {
+class BloodMoonNotificationManager(private val context: Context) {
 
     companion object {
         private const val PREFS_NAME = "blood_moon_reminder"
@@ -29,11 +28,12 @@ class BloodMoonReminderManager(private val context: Context) {
         val triggerMillis = triggerTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
         if (triggerMillis < System.currentTimeMillis()) {
-            Toast.makeText(context, "Осталось меньше установленного времени", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "До луны меньше времени, чем установлено", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val intent = Intent(context, BloodMoonReminderReceiver::class.java).apply {
+        val intent = Intent(context, BloodMoonNotificationReceiver::class.java).apply {
+            putExtra("original_trigger_time", triggerMillis) // Передаём оригинальное время
             putExtra("reminder_minutes", minutesBefore)
         }
         val pendingIntent = PendingIntent.getBroadcast(
@@ -63,7 +63,7 @@ class BloodMoonReminderManager(private val context: Context) {
     }
 
     fun cancelReminder() {
-        val intent = Intent(context, BloodMoonReminderReceiver::class.java)
+        val intent = Intent(context, BloodMoonNotificationReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             REQUEST_CODE,
