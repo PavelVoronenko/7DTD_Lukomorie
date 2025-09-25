@@ -168,7 +168,7 @@ class InfoFragment : BaseFragment() {
         dayText.text = "${data.day}"
         dayText.setTextColor(
             if (data.day % 7 == 0)
-                ContextCompat.getColor(requireContext(), android.R.color.holo_red_light)
+                ContextCompat.getColor(requireContext(), R.color.red)
             else
                 ContextCompat.getColor(requireContext(), android.R.color.holo_orange_light)
         )

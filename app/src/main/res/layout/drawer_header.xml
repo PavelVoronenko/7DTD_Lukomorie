@@ -13,7 +13,7 @@
     <View
         android:id="@+id/header_background"
         android:layout_width="260dp"
-        android:layout_height="80dp"
+        android:layout_height="140dp"
         android:background="@drawable/drawer_header"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

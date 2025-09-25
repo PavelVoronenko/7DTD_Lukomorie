@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Lukomorie</string>
+    <string name="server_status">Статус сервера:</string>
 </resources>

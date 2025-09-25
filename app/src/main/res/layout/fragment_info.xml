@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
             android:fontFamily="sans-serif"
-            android:text="Статус сервера: "
+            android:text="@string/server_status"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -74,13 +74,13 @@
             app:layout_constraintTop_toTopOf="@id/status_label" />
 
         <!-- Блок статистики -->
-        <androidx.cardview.widget.CardView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/stats_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardBackgroundColor="#1E1E1E"
-            app:cardCornerRadius="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/reminder_card_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/status_value">
@@ -88,7 +88,11 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:padding="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <!-- Игроки онлайн -->
                 <TextView
@@ -144,6 +148,7 @@
                     android:id="@+id/day_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:drawablePadding="8dp"
                     android:gravity="start|center_vertical"
                     android:text="📅 День № "
@@ -168,6 +173,7 @@
                     android:id="@+id/blood_moon_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:drawablePadding="8dp"
                     android:gravity="start|center_vertical"
                     android:text="🌙 Кровавая луна: "
@@ -196,16 +202,16 @@
                     app:layout_constraintGuide_percent="0.25" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Блок таймера -->
-        <androidx.cardview.widget.CardView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/timer_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:cardBackgroundColor="#1E1E1E"
-            app:cardCornerRadius="16dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/reminder_card_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/stats_card">
@@ -213,7 +219,11 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp">
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <!-- Круговой таймер -->
                 <com.google.android.material.progressindicator.CircularProgressIndicator
@@ -253,17 +263,16 @@
                     app:layout_constraintTop_toBottomOf="@+id/circular_timer" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Блок напоминания -->
-        <androidx.cardview.widget.CardView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/reminder_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="32dp"
-            app:cardBackgroundColor="#1E1E1E"
-            app:cardCornerRadius="16dp"
+            android:background="@drawable/reminder_card_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/timer_card">
@@ -274,7 +283,11 @@
                 android:paddingStart="16dp"
                 android:paddingTop="12dp"
                 android:paddingEnd="16dp"
-                android:paddingBottom="12dp">
+                android:paddingBottom="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <!-- Текст слева -->
                 <TextView
@@ -287,7 +300,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_percent="0.45" />
+                    app:layout_constraintWidth_percent="0.52" />
 
                 <!-- Спиннер по центру -->
                 <Spinner
@@ -299,14 +312,14 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/reminder_label"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_percent="0.35" />
+                    app:layout_constraintWidth_percent="0.27" />
 
                 <!-- Переключатель справа -->
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/switch_reminder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="18dp"
+                    android:layout_marginStart="20dp"
                     android:checked="false"
                     android:scaleX="1.2"
                     android:scaleY="1.2"
@@ -318,7 +331,7 @@
                     app:trackTint="#5D1E1E" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
