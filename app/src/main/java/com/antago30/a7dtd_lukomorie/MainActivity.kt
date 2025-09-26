@@ -127,6 +127,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadFragment(fragment: Fragment) {
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.content_frame)
+
+        if (currentFragment != null && fragment.javaClass == currentFragment.javaClass) {
+            return
+        }
+
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
             .replace(R.id.content_frame, fragment)
