@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 
 class NotificationPermissionManager(
@@ -12,6 +13,7 @@ class NotificationPermissionManager(
 ) {
 
     companion object {
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         const val PERMISSION = Manifest.permission.POST_NOTIFICATIONS
     }
 

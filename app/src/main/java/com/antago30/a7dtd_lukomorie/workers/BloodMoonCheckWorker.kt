@@ -2,7 +2,9 @@ package com.antago30.a7dtd_lukomorie.workers
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -10,10 +12,14 @@ import com.antago30.a7dtd_lukomorie.R
 import com.antago30.a7dtd_lukomorie.logic.BloodMoonCalculator
 import com.antago30.a7dtd_lukomorie.parser.WebParser
 import com.antago30.a7dtd_lukomorie.utils.Constants
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import kotlin.math.abs
+import kotlin.math.absoluteValue
+import androidx.core.content.edit
+import com.antago30.a7dtd_lukomorie.MainActivity
 
 class BloodMoonCheckWorker(
     context: Context,
@@ -23,8 +29,8 @@ class BloodMoonCheckWorker(
     companion object {
         const val CHANNEL_ID = "blood_moon_update_channel"
         const val NOTIFICATION_ID = 2001
-        const val KEY_ORIGINAL_TRIGGER_TIME = "original_trigger_time"
         const val KEY_REMINDER_MINUTES = "reminder_minutes"
+        const val KEY_ORIGINAL_BLOOD_MOON_MILLIS = "original_blood_moon_millis"
     }
 
     private val webParser = WebParser()
@@ -32,52 +38,38 @@ class BloodMoonCheckWorker(
 
     override fun doWork(): Result {
         return try {
-            // Парсим актуальные данные
+            // 1. Получаем актуальное время Blood Moon
             val serverInfo = webParser.parseInfo(Constants.INFO_URL)
+            val actualBloodMoon = calculator.calculateNextBloodMoon(serverInfo.day, serverInfo.time)
 
-            // Рассчитываем новое время следующей луны
-            val newNextBloodMoon = calculator.calculateNextBloodMoon(
-                currentGameDay = serverInfo.day,
-                currentGameTime = serverInfo.time
-            )
-
-            // Получаем изначальное время срабатывания (когда пользователь включил напоминание)
-            val originalTriggerTime = inputData.getLong(KEY_ORIGINAL_TRIGGER_TIME, 0)
+            // 2. Получаем ожидаемое время из inputData
+            val expectedBloodMoonMillis = inputData.getLong(KEY_ORIGINAL_BLOOD_MOON_MILLIS, 0)
             val reminderMinutes = inputData.getInt(KEY_REMINDER_MINUTES, 15)
 
-            if (originalTriggerTime == 0L) {
-                // Если нет оригинального времени — показываем стандартное уведомление
+            if (expectedBloodMoonMillis == 0L) {
                 showStandardNotification(reminderMinutes)
                 return Result.success()
             }
 
-            // Рассчитываем, когда должно было сработать напоминание (оригинальное время)
-            val expectedReminderTime = originalTriggerTime + (reminderMinutes * 60 * 1000)
+            val expectedBloodMoon = Instant.ofEpochMilli(expectedBloodMoonMillis)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime()
 
-            // Проверяем, совпадает ли новое время луны с ожидаемым
-            val newReminderTime = newNextBloodMoon.minusMinutes(reminderMinutes.toLong())
-                .atZone(java.time.ZoneId.systemDefault())
-                .toInstant()
-                .toEpochMilli()
+            // 3. Сравниваем
+            val diff = ChronoUnit.MINUTES.between(expectedBloodMoon, actualBloodMoon).absoluteValue
 
-            val timeDifference = abs(expectedReminderTime - newReminderTime)
-
-            if (timeDifference < 60 * 1000) { // Разница меньше 1 минуты
+            if (diff <= 1) {
+                // Всё по плану
                 showStandardNotification(reminderMinutes)
             } else {
-                // Время сместилось — показываем обновлённое уведомление
-                val minutesUntilNewMoon = ChronoUnit.MINUTES.between(LocalDateTime.now(), newNextBloodMoon)
-                val formattedNewTime = newNextBloodMoon.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
-
-                showShiftedNotification(formattedNewTime, minutesUntilNewMoon)
+                // Время сместилось!
+                val formattedNewTime = actualBloodMoon.format(DateTimeFormatter.ofPattern("dd.MM HH:mm"))
+                showShiftedNotification(formattedNewTime, ChronoUnit.MINUTES.between(LocalDateTime.now(), actualBloodMoon))
             }
 
             Result.success()
         } catch (e: Exception) {
-            showNotification(
-                title = "Ошибка напоминания",
-                content = "Не удалось обновить данные. Проверьте подключение."
-            )
+            showNotification("Ошибка", "Не удалось проверить время Blood Moon")
             Result.failure()
         }
     }
@@ -92,12 +84,24 @@ class BloodMoonCheckWorker(
     private fun showShiftedNotification(newTime: String, minutesUntilNewMoon: Long) {
         showNotification(
             title = "Время луны перенеслось",
-            content = "Игроков не было онлайн. Кровавая Луна перенесена на $newTime (через $minutesUntilNewMoon мин). Напоминание отключено"
+            content = "Игроков не было онлайн. Кровавая Луна перенесена на $newTime (через $minutesUntilNewMoon мин)"
         )
     }
 
     private fun showNotification(title: String, content: String) {
         createNotificationChannel()
+
+        val intent = Intent(applicationContext, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
+        val pendingIntent = PendingIntent.getActivity(
+            applicationContext,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(R.mipmap.app_icon)
             .setContentTitle(title)
@@ -106,6 +110,7 @@ class BloodMoonCheckWorker(
             .setAutoCancel(true)
             .setVibrate(longArrayOf(500, 500, 500))
             .setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI)
+            .setContentIntent(pendingIntent)
             .build()
 
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -124,5 +129,13 @@ class BloodMoonCheckWorker(
         }
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
+    }
+
+    private fun disableReminderGlobally() {
+        val prefs = applicationContext.getSharedPreferences("blood_moon_prefs", Context.MODE_PRIVATE)
+        prefs.edit {
+            putBoolean("reminder_should_be_disabled", true)
+                .putBoolean("reminder_active", false)
+        }
     }
 }

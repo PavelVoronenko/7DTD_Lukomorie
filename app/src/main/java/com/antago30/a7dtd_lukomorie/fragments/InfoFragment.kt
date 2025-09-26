@@ -2,7 +2,6 @@ package com.antago30.a7dtd_lukomorie.fragments
 
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -107,7 +106,7 @@ class InfoFragment : BaseFragment() {
         }
     }
 
-    private fun handleSwitchToggle(isChecked: Boolean) {
+    fun handleSwitchToggle(isChecked: Boolean) {
         switchReminder.thumbTintList = ColorStateList.valueOf(
             if (isChecked) "#00FF00".toColorInt() else "#FF0000".toColorInt()
         )
@@ -146,7 +145,6 @@ class InfoFragment : BaseFragment() {
         return try {
             webParser.parseInfo(Constants.INFO_URL)
         } catch (e: Exception) {
-            Log.e("InfoFragment", "Ошибка загрузки данных", e)
             ServerInfo("Ошибка загрузки", "00:00", 0, 0, "22:00")
         }
     }
@@ -160,6 +158,7 @@ class InfoFragment : BaseFragment() {
         updateBasicInfo(data)
         calculateAndDisplayBloodMoonTime(data)
         startBloodMoonTimer(data)
+        restoreReminderState()
     }
 
     private fun updateBasicInfo(data: ServerInfo) {
@@ -192,7 +191,6 @@ class InfoFragment : BaseFragment() {
                 reminderManager.scheduleReminder(nextBloodMoonDateTime, minutes) {}
             }
         } catch (e: Exception) {
-            Log.e("InfoFragment", "Ошибка вычисления луны", e)
             nextBloodMoonText.text = "Ошибка: Не удалось вычислить луну"
             nextBloodMoonText.visibility = View.VISIBLE
             cachedNextBloodMoonDateTime = null
@@ -230,13 +228,27 @@ class InfoFragment : BaseFragment() {
 
     private fun restoreReminderState() {
         if (reminderManager.shouldAutoDisable()) {
+            switchReminder.setOnCheckedChangeListener(null)
             switchReminder.isChecked = false
+            switchReminder.thumbTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.red))
+            switchReminder.setOnCheckedChangeListener { _, isChecked ->
+                handleSwitchToggle(isChecked)
+            }
             reminderManager.cancelReminder()
+            reminderManager.clearAutoDisableFlag()
         } else if (reminderManager.isReminderActive()) {
             switchReminder.isChecked = true
             val savedMinutes = reminderManager.getSavedReminderMinutes()
             val position = getPositionForMinutes(savedMinutes)
             spinnerReminder.setSelection(position)
+        } else {
+            // Если напоминание неактивно и не требует автоотключения — явно выключаем свитчер
+            switchReminder.setOnCheckedChangeListener(null)
+            switchReminder.isChecked = false
+            switchReminder.thumbTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.red))
+            switchReminder.setOnCheckedChangeListener { _, isChecked ->
+                handleSwitchToggle(isChecked)
+            }
         }
     }
 

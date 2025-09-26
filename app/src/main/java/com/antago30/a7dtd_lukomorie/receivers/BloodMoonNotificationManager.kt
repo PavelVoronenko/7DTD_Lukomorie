@@ -17,6 +17,7 @@ class BloodMoonNotificationManager(private val context: Context) {
         private const val KEY_IS_ACTIVE = "is_active"
         private const val KEY_TRIGGER_TIME = "trigger_time"
         private const val KEY_REMINDER_MINUTES = "reminder_minutes"
+        private const val KEY_SHOULD_DISABLE = "should_disable"
         private const val REQUEST_CODE = 1001
     }
 
@@ -32,8 +33,12 @@ class BloodMoonNotificationManager(private val context: Context) {
             return
         }
 
+        val bloodMoonMillis = nextBloodMoonTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+
+
         val intent = Intent(context, BloodMoonNotificationReceiver::class.java).apply {
-            putExtra("original_trigger_time", triggerMillis) // Передаём оригинальное время
+            putExtra("original_blood_moon_millis", bloodMoonMillis)
             putExtra("reminder_minutes", minutesBefore)
         }
         val pendingIntent = PendingIntent.getBroadcast(
@@ -82,10 +87,27 @@ class BloodMoonNotificationManager(private val context: Context) {
 
     fun isReminderActive(): Boolean = prefs.getBoolean(KEY_IS_ACTIVE, false)
 
+    fun requestDisableReminder() {
+        prefs.edit {
+            putBoolean(KEY_SHOULD_DISABLE, true)
+            putBoolean(KEY_IS_ACTIVE, false)
+        }
+    }
+
     fun shouldAutoDisable(): Boolean {
+        // 1. Время напоминания уже прошло
+        // 2. Worker запросил отключение (например, из-за смещения времени)
         val isActive = isReminderActive()
         val triggerTime = prefs.getLong(KEY_TRIGGER_TIME, 0)
-        return isActive && triggerTime < System.currentTimeMillis()
+        val shouldDisable = prefs.getBoolean(KEY_SHOULD_DISABLE, false)
+
+        return shouldDisable || (isActive && triggerTime < System.currentTimeMillis())
+    }
+
+    fun clearAutoDisableFlag() {
+        prefs.edit {
+            putBoolean(KEY_SHOULD_DISABLE, false)
+        }
     }
 
     fun getSavedReminderMinutes(): Int = prefs.getInt(KEY_REMINDER_MINUTES, 15)
