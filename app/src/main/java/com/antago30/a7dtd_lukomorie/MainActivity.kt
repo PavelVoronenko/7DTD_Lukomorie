@@ -55,7 +55,11 @@ class MainActivity : AppCompatActivity() {
             title.text = item.title
 
             menuItemView.setOnClickListener {
-                val fragment = item.fragmentClass.newInstance() as Fragment
+                val classLoader = item.fragmentClass.classLoader ?: this.javaClass.classLoader
+                val fragment = supportFragmentManager.fragmentFactory.instantiate(
+                    classLoader,
+                    item.fragmentClass.name
+                )
                 loadFragment(fragment)
                 drawerLayout.closeDrawers()
             }
