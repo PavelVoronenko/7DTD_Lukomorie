@@ -23,6 +23,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import java.time.LocalDateTime
 import android.widget.Spinner
 import androidx.core.graphics.toColorInt
+import com.antago30.a7dtd_lukomorie.permissions.ExactAlarmPermissionManager
 
 class InfoFragment : BaseFragment() {
 
@@ -38,6 +39,7 @@ class InfoFragment : BaseFragment() {
     private var displayManager: BloodMoonDisplayManager? = null
     private lateinit var reminderManager: BloodMoonNotificationManager
     private lateinit var permissionManager: NotificationPermissionManager
+    private lateinit var exactAlarmManager: ExactAlarmPermissionManager
     private var pendingReminderData: Pair<LocalDateTime, Int>? = null
 
     private var cachedNextBloodMoonDateTime: LocalDateTime? = null
@@ -84,6 +86,7 @@ class InfoFragment : BaseFragment() {
     private fun initReminderSystem() {
         reminderManager = BloodMoonNotificationManager(requireContext())
         permissionManager = NotificationPermissionManager(requireContext(), requestPermissionLauncher)
+        exactAlarmManager = ExactAlarmPermissionManager(requireContext())
     }
 
     private fun setupSpinner() {
@@ -115,9 +118,16 @@ class InfoFragment : BaseFragment() {
             cachedNextBloodMoonDateTime?.let { nextBloodMoonTime ->
                 val minutes = getSelectedMinutes()
 
+                if (!exactAlarmManager.canScheduleExactAlarms()) {
+                    Toast.makeText(context, "Разрешите точные будильники в настройках", Toast.LENGTH_LONG).show()
+                    exactAlarmManager.openExactAlarmSettings()
+                    switchReminder.isChecked = false
+                    return
+                }
+
                 permissionManager.requestPermissionIfNeeded {
                     reminderManager.scheduleReminder(nextBloodMoonTime, minutes) {
-                        Toast.makeText(context, "Напоминание установлено!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Напоминание установлено", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -130,7 +140,7 @@ class InfoFragment : BaseFragment() {
     private fun setupReminderAfterPermission() {
         pendingReminderData?.let { (nextBloodMoonTime, minutes) ->
             reminderManager.scheduleReminder(nextBloodMoonTime, minutes) {
-                Toast.makeText(context, "Напоминание установлено!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Напоминание установлено", Toast.LENGTH_SHORT).show()
             }
             pendingReminderData = null
         }
@@ -185,11 +195,12 @@ class InfoFragment : BaseFragment() {
             nextBloodMoonText.visibility = View.VISIBLE
             cachedNextBloodMoonDateTime = nextBloodMoonDateTime
 
-            if (switchReminder.isChecked) {
+            // Если надо обновлять будильник с изменением время кровавой луны на сервере
+            /*if (switchReminder.isChecked) {
                 val minutes = getSelectedMinutes()
                 reminderManager.cancelReminder()
                 reminderManager.scheduleReminder(nextBloodMoonDateTime, minutes) {}
-            }
+            }*/
         } catch (e: Exception) {
             nextBloodMoonText.text = "Ошибка: Не удалось вычислить луну"
             nextBloodMoonText.visibility = View.VISIBLE
@@ -259,7 +270,7 @@ class InfoFragment : BaseFragment() {
                     val minutes = parseMinutesFromSpinner(position)
                     reminderManager.cancelReminder()
                     reminderManager.scheduleReminder(nextBloodMoonTime, minutes) {
-                        Toast.makeText(context, "Напоминание обновлено!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Напоминание обновлено", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
