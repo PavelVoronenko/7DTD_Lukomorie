@@ -155,13 +155,17 @@ class InfoFragment : BaseFragment() {
         return try {
             webParser.parseInfo(Constants.INFO_URL)
         } catch (e: Exception) {
-            ServerInfo("Ошибка загрузки", "00:00", 0, 0, "22:00")
+            //ServerInfo("Ошибка загрузки", "00:00", 7, 0, "22:00")
         }
     }
 
     override fun updateUI(data: Any) {
         if (data !is ServerInfo) {
-            statusText.text = "Ошибка отображения"
+            statusText.text = " Нет сети!"
+            playersOnlineText.text = "--"
+            timeText.text = "--:--:--"
+            dayText.text = "---"
+            nextBloodMoonText.text = "--.--.---- --:--"
             return
         }
 
@@ -172,7 +176,7 @@ class InfoFragment : BaseFragment() {
     }
 
     private fun updateBasicInfo(data: ServerInfo) {
-        statusText.text = if (data.status == "в сети.") "Online" else "Offline"
+        statusText.text = if (data.status == "в сети.") " Online" else " Offline"
         timeText.text = data.time
         dayText.text = "${data.day}"
         dayText.setTextColor(

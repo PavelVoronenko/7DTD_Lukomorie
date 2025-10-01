@@ -5,6 +5,7 @@ import com.antago30.a7dtd_lukomorie.logic.timer.BloodMoonProgressTimer
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import java.util.Locale
 
 class BloodMoonDisplayManager(
     private val circularTimer: CircularProgressIndicator,
@@ -31,16 +32,15 @@ class BloodMoonDisplayManager(
             ((elapsedMillis.toDouble() / totalDurationMillis) * 100).toInt().coerceIn(0, 100)
         }
 
-        val remainingMillis = if (isBloodMoonActive) {
-            ChronoUnit.MILLIS.between(now, bloodMoonEnd).coerceAtLeast(0)
+        if (isBloodMoonActive) {
+            timerText.text = "Сейчас!"
         } else {
-            ChronoUnit.MILLIS.between(now, nextBloodMoon).coerceAtLeast(0)
+            val remainingMillis = ChronoUnit.MILLIS.between(now, nextBloodMoon).coerceAtLeast(0)
+            val hours = remainingMillis / (1000 * 60 * 60)
+            val minutes = (remainingMillis / (1000 * 60)) % 60
+            val seconds = (remainingMillis / 1000) % 60
+            timerText.text = String.format(Locale.ROOT, "%02d:%02d:%02d", hours, minutes, seconds)
         }
-
-        val hours = remainingMillis / (1000 * 60 * 60)
-        val minutes = (remainingMillis / (1000 * 60)) % 60
-        val seconds = (remainingMillis / 1000) % 60
-        timerText.text = String.format(java.util.Locale.ROOT, "%02d:%02d:%02d", hours, minutes, seconds)
 
         circularTimer.progress = progress
         circularTimer.setIndicatorColor(
@@ -63,7 +63,9 @@ class BloodMoonDisplayManager(
             nextBloodMoonStart = nextBloodMoon,
             onTick = { progress, timeFormatted, isBloodMoonNow ->
                 circularTimer.progress = progress
-                timerText.text = timeFormatted
+
+                timerText.text = if (isBloodMoonNow) "Сейчас!" else timeFormatted
+
                 circularTimer.setIndicatorColor(
                     if (isBloodMoonNow) android.graphics.Color.RED
                     else when {
@@ -74,7 +76,7 @@ class BloodMoonDisplayManager(
                 )
             },
             onFinish = {
-                timerText.text = "Луна началась! 🌕"
+                timerText.text = "Сейчас!"
                 circularTimer.setIndicatorColor(android.graphics.Color.RED)
                 circularTimer.progress = 100
             }
