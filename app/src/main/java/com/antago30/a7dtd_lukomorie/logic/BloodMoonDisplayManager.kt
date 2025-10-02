@@ -46,8 +46,8 @@ class BloodMoonDisplayManager(
         circularTimer.setIndicatorColor(
             if (isBloodMoonActive) android.graphics.Color.RED
             else when {
-                progress > 60 -> android.graphics.Color.RED
-                progress > 30 -> android.graphics.Color.YELLOW
+                progress > 80 -> android.graphics.Color.RED
+                progress > 50 -> android.graphics.Color.YELLOW
                 else -> android.graphics.Color.GREEN
             }
         )
@@ -58,19 +58,28 @@ class BloodMoonDisplayManager(
     ): BloodMoonProgressTimer {
         onTimerStop()
 
+        val now = LocalDateTime.now()
+        val isBloodMoonActive = now.isAfter(nextBloodMoon) && now.isBefore(bloodMoonEnd)
+        //val isBloodMoonActive = now.isAfter(LocalDateTime.of(2025, 10, 2, 8, 0)) && now.isBefore(LocalDateTime.of(2025, 10, 2, 9, 0))
+
         return BloodMoonProgressTimer(
             previousBloodMoonStart = previousBloodMoon,
             nextBloodMoonStart = nextBloodMoon,
             onTick = { progress, timeFormatted, isBloodMoonNow ->
-                circularTimer.progress = progress
 
-                timerText.text = if (isBloodMoonNow) "Сейчас!" else timeFormatted
+                if (isBloodMoonActive) {
+                    timerText.text = "Сейчас!"
+                    circularTimer.progress  = 100
+                } else {
+                    timerText.text = timeFormatted
+                    circularTimer.progress = progress
+                }
 
                 circularTimer.setIndicatorColor(
-                    if (isBloodMoonNow) android.graphics.Color.RED
+                    if (isBloodMoonActive) android.graphics.Color.RED
                     else when {
-                        progress > 60 -> android.graphics.Color.RED
-                        progress > 30 -> android.graphics.Color.YELLOW
+                        progress > 80 -> android.graphics.Color.RED
+                        progress > 50 -> android.graphics.Color.YELLOW
                         else -> android.graphics.Color.GREEN
                     }
                 )
