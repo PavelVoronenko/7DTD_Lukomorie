@@ -36,7 +36,7 @@ class LeaderboardFragment : BaseFragment() {
 
     override fun loadData(): Any {
         return try {
-            webParser.parseLeaderboard(Constants.LEADERBOARD_URL)
+            webParser.parseLeaderboard(Constants.FULL_DATA_URL)
         } catch (e: IOException) {
             Log.e("LeaderboardFragment", "Ошибка загрузки таблицы лидеров", e)
             emptyList<PlayerItem>()

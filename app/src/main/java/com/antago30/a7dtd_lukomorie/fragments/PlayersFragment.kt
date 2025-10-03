@@ -34,7 +34,7 @@ class PlayersFragment : BaseFragment() {
 
     override fun loadData(): Any {
         return try {
-            webParser.parseOnlinePlayers(Constants.PLAYERS_URL)
+            webParser.parseOnlinePlayers(Constants.FULL_DATA_URL)
         } catch (e: Exception) {
             emptyList<PlayerItem>()
         }

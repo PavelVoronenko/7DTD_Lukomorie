@@ -46,7 +46,7 @@ class NewsFragment : BaseFragment() {
 
     override fun loadData(): Any {
         return try {
-            webParser.parseNews(Constants.NEWS_URL)
+            webParser.parseNews(Constants.FULL_DATA_URL)
         } catch (e: IOException) {
             emptyList<NewsItem>()
         }

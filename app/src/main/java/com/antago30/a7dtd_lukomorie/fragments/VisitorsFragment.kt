@@ -36,7 +36,7 @@ class VisitorsFragment : BaseFragment() {
 
     override fun loadData(): Any {
         return try {
-            webParser.parseVisitors(Constants.VISITORS_URL)
+            webParser.parseVisitors(Constants.FULL_DATA_URL)
         } catch (e: IOException) {
             Log.e("VisitorsFragment", "Ошибка загрузки посетителей", e)
             emptyList<VisitorItem>()

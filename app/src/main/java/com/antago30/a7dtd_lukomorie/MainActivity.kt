@@ -17,6 +17,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.compose.ui.unit.Constraints
+import com.antago30.a7dtd_lukomorie.utils.Constants
 
 class MainActivity : AppCompatActivity() {
 
@@ -73,19 +75,19 @@ class MainActivity : AppCompatActivity() {
         val btnTelegram = findViewById<LinearLayout>(R.id.btn_telegram)
 
         btnWebsite.setOnClickListener {
-            openUrl("http://79.173.124.221:2000")
+            openUrl(Constants.BASE_URL)
         }
 
         btnSteam.setOnClickListener {
-            openUrl("https://steamcommunity.com/groups/7DTDLukomorie")
+            openUrl(Constants.STEAM_GROUP)
         }
 
         btnDiscord.setOnClickListener {
-            openUrl("https://discord.gg/vsDTxhsJBK")
+            openUrl(Constants.DISCORD_GROUP)
         }
 
         btnTelegram.setOnClickListener {
-            openUrl("https://t.me/+Hz0eQrmP0Wg1ZGMy")
+            openUrl(Constants.TELEGRAM_GROUP)
         }
 
         setupBottomMenuButton(btnWebsite, R.drawable.internet, "Страничка сервера")

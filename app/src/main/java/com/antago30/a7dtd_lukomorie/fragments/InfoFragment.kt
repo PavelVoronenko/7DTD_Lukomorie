@@ -153,7 +153,7 @@ class InfoFragment : BaseFragment() {
 
     override fun loadData(): Any {
         return try {
-            webParser.parseInfo(Constants.INFO_URL)
+            webParser.parseInfo(Constants.FULL_DATA_URL)
         } catch (e: Exception) {
             //ServerInfo("Ошибка загрузки", "00:00", 7, 0, "22:00")
         }
@@ -199,7 +199,7 @@ class InfoFragment : BaseFragment() {
             nextBloodMoonText.visibility = View.VISIBLE
             cachedNextBloodMoonDateTime = nextBloodMoonDateTime
 
-            // Если надо обновлять будильник с изменением время кровавой луны на сервере
+            // Если надо обновлять будильник с изменением времени кровавой луны на сервере
             /*if (switchReminder.isChecked) {
                 val minutes = getSelectedMinutes()
                 reminderManager.cancelReminder()

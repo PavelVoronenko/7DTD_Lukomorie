@@ -39,7 +39,7 @@ class BloodMoonCheckWorker(
     override fun doWork(): Result {
         return try {
             // 1. Получаем актуальное время Blood Moon
-            val serverInfo = webParser.parseInfo(Constants.INFO_URL)
+            val serverInfo = webParser.parseInfo(Constants.FULL_DATA_URL)
             val actualBloodMoon = calculator.calculateNextBloodMoon(serverInfo.day, serverInfo.time)
 
             // 2. Получаем ожидаемое время из inputData

@@ -12,9 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.antago30.a7dtd_lukomorie.R
 import com.antago30.a7dtd_lukomorie.adapter.BannedPlayersAdapter
 import com.antago30.a7dtd_lukomorie.model.BannedPlayer
-import com.antago30.a7dtd_lukomorie.parser.WebParser
 import com.antago30.a7dtd_lukomorie.utils.Constants
-import java.io.IOException
 
 class BanListFragment : BaseFragment() {
 
@@ -45,7 +43,7 @@ class BanListFragment : BaseFragment() {
 
     override fun loadData(): Any {
         return try {
-            webParser.parseBanList(Constants.BAN_LIST_URL)
+            webParser.parseBanList(Constants.FULL_DATA_URL)
         } catch (e: Exception) {
             Log.e("BanListFragment", "Ошибка загрузки бан-листа", e)
             emptyList<BannedPlayer>()
