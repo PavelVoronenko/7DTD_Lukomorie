@@ -1,5 +1,3 @@
-// com.antago30.a7dtd_lukomorie.parser.WebParser.kt
-
 package com.antago30.a7dtd_lukomorie.parser
 
 import com.antago30.a7dtd_lukomorie.model.*
@@ -48,7 +46,7 @@ class WebParser {
         return data.news
     }
 
-    // Загружает и парсит XML каждый раз — без кэширования!
+    // Загружает и парсит XML
     @Throws(Exception::class)
     private fun parseFullDataFromUrl(url: String): FullServerData {
         val xml = loadXmlWithoutBom(url)
@@ -178,7 +176,7 @@ class WebParser {
         )
     }
 
-    // Безопасная загрузка XML с удалением BOM
+    // Удаление BOM
     @Throws(Exception::class)
     private fun loadXmlWithoutBom(url: String): String {
         return URL(url).openStream().use { stream ->
@@ -195,13 +193,3 @@ class WebParser {
         }
     }
 }
-
-// Вспомогательный класс для внутреннего использования
-data class FullServerData(
-    val serverInfo: ServerInfo,
-    val onlinePlayers: List<PlayerItem>,
-    val visitors: List<VisitorItem>,
-    val leaderboard: List<PlayerItem>,
-    val bannedPlayers: List<BannedPlayer>,
-    val news: List<NewsItem>
-)
