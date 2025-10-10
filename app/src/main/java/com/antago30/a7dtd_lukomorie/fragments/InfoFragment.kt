@@ -26,6 +26,7 @@ import java.time.LocalDateTime
 import android.widget.Spinner
 import androidx.core.graphics.toColorInt
 import com.antago30.a7dtd_lukomorie.permissions.ExactAlarmPermissionManager
+import com.google.android.material.progressindicator.CircularProgressIndicator
 
 class InfoFragment : BaseFragment() {
 
@@ -37,6 +38,12 @@ class InfoFragment : BaseFragment() {
     private lateinit var spinnerReminder: Spinner
     private lateinit var switchReminder: SwitchMaterial
     private lateinit var bloodMoonPrefs: SharedPreferences
+    private lateinit var circularTimer: CircularProgressIndicator
+    private lateinit var timerText: TextView
+    /*private lateinit var nextBloodMoonTv: TextView
+    private lateinit var currentBloodMoonTv: TextView
+    private lateinit var bloodMoonEndTv: TextView
+    private lateinit var isBloodMoonNowTv: TextView*/
 
     private var bloodMoonTimer: BloodMoonProgressTimer? = null
     private var displayManager: BloodMoonDisplayManager? = null
@@ -84,12 +91,14 @@ class InfoFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
+        bloodMoonTimer?.start()
         bloodMoonPrefs.registerOnSharedPreferenceChangeListener(prefsListener)
     }
 
     override fun onPause() {
-        bloodMoonPrefs.unregisterOnSharedPreferenceChangeListener(prefsListener)
         super.onPause()
+        bloodMoonPrefs.unregisterOnSharedPreferenceChangeListener(prefsListener)
+        bloodMoonTimer?.stop()
     }
 
     private fun initViews(view: View) {
@@ -100,6 +109,14 @@ class InfoFragment : BaseFragment() {
         nextBloodMoonText = view.findViewById(R.id.blood_moon_value)
         spinnerReminder = view.findViewById(R.id.spinner_reminder)
         switchReminder = view.findViewById(R.id.switch_reminder)
+        circularTimer = view.findViewById(R.id.circular_timer)
+        timerText = view.findViewById(R.id.timer_text)
+
+        /*nextBloodMoonTv = view.findViewById(R.id.nextBloodMoonTv)
+        currentBloodMoonTv = view.findViewById(R.id.currentBloodMoonTv)
+        bloodMoonEndTv = view.findViewById(R.id.bloodMoonEndTv)
+        isBloodMoonNowTv = view.findViewById(R.id.isBloodMoonNowTv)*/
+
     }
 
     private fun initReminderSystem() {
@@ -271,25 +288,51 @@ class InfoFragment : BaseFragment() {
 
     private fun startBloodMoonTimer(data: ServerInfo) {
         val nextBloodMoonDateTime = cachedNextBloodMoonDateTime ?: return
-        val gameDayLengthSeconds = 8111L
-        val previousBloodMoonDateTime = nextBloodMoonDateTime.minusSeconds(7 * gameDayLengthSeconds)
+        val previousBloodMoonDateTime = nextBloodMoonDateTime.minusSeconds(7 * Constants.LENGTH_OF_DAY)
+        var currentBloodMoonDateTime: LocalDateTime
 
-        displayManager = BloodMoonDisplayManager(
-            circularTimer = requireView().findViewById(R.id.circular_timer),
-            timerText = requireView().findViewById(R.id.timer_text),
-            previousBloodMoon = previousBloodMoonDateTime,
-            nextBloodMoon = nextBloodMoonDateTime
-        )
+        if (LocalDateTime.now() > previousBloodMoonDateTime.plusSeconds(BloodMoonDisplayManager.BLOOD_MOON_DURATION_HOURS * Constants.LENGTH_OF_DAY / 24) ) {
+            currentBloodMoonDateTime = nextBloodMoonDateTime
+        } else {
+            currentBloodMoonDateTime = previousBloodMoonDateTime
+        }
+
+        bloodMoonTimer?.stop()
+        bloodMoonTimer = null
 
         if (data.playersOnline == 0) {
-            bloodMoonTimer?.stop()
-            bloodMoonTimer = null
-            displayManager?.updateStaticState()
-        } else {
-            bloodMoonTimer = displayManager?.startDynamicTimer(
-                onTimerStop = { bloodMoonTimer?.stop() }
+            displayManager = BloodMoonDisplayManager(
+                circularTimer = requireView().findViewById(R.id.circular_timer),
+                timerText = requireView().findViewById(R.id.timer_text),
+                previousBloodMoon = previousBloodMoonDateTime,
+                currentBloodMoon = currentBloodMoonDateTime,
+                nextBloodMoon = nextBloodMoonDateTime,
+
+                nextBloodMoonTv = requireView().findViewById(R.id.nextBloodMoonTv),
+                currentBloodMoonTv = requireView().findViewById(R.id.currentBloodMoonTv),
+                bloodMoonEndTv = requireView().findViewById(R.id.bloodMoonEndTv),
+                isBloodMoonNowTv = requireView().findViewById(R.id.isBloodMoonNowTv)
             )
+            displayManager?.updateStaticState()
+            return
         }
+
+        displayManager = BloodMoonDisplayManager(
+            circularTimer = circularTimer,
+            timerText = timerText,
+            previousBloodMoon = previousBloodMoonDateTime,
+            currentBloodMoon = currentBloodMoonDateTime,
+            nextBloodMoon = nextBloodMoonDateTime,
+
+            nextBloodMoonTv = requireView().findViewById(R.id.nextBloodMoonTv),
+            currentBloodMoonTv = requireView().findViewById(R.id.currentBloodMoonTv),
+            bloodMoonEndTv = requireView().findViewById(R.id.bloodMoonEndTv),
+            isBloodMoonNowTv = requireView().findViewById(R.id.isBloodMoonNowTv)
+        )
+
+        bloodMoonTimer = displayManager?.startDynamicTimer(
+            onTimerStop = { }
+        )
     }
 
     private fun restoreSpinnerPosition() {

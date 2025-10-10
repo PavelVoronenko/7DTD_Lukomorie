@@ -6,4 +6,5 @@ object Constants {
     const val STEAM_GROUP = "https://steamcommunity.com/groups/7DTDLukomorie"
     const val DISCORD_GROUP = "https://discord.gg/vsDTxhsJBK"
     const val TELEGRAM_GROUP = "https://t.me/+Hz0eQrmP0Wg1ZGMy"
+    const val LENGTH_OF_DAY = 8111L
 }
