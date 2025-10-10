@@ -1,10 +1,11 @@
 package com.antago30.a7dtd_lukomorie.logic
 
+import com.antago30.a7dtd_lukomorie.utils.Constants
 import java.time.LocalDateTime
 import java.time.LocalTime
 
 class BloodMoonCalculator(
-    private val gameDayLengthSeconds: Long = 8111,
+    private val gameDayLengthSeconds: Long = Constants.LENGTH_OF_DAY,
     private val bloodMoonDay: Int = 7,
     private val bloodMoonHour: Double = 22.0
 ) {

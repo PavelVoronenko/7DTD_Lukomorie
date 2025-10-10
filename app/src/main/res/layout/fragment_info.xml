@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background">
@@ -66,7 +67,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/adlam_display"
-            android:text="Online"
             android:textColor="@android:color/holo_green_light"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@id/status_label"
@@ -243,9 +243,11 @@
                     android:id="@+id/timer_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/adlam_display"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center"
                     android:textColor="#FFFFFF"
                     android:textSize="24sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/circular_timer"
                     app:layout_constraintEnd_toEndOf="@+id/circular_timer"
                     app:layout_constraintStart_toStartOf="@+id/circular_timer"
@@ -334,4 +336,57 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/nextBloodMoonTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="nextBloodMoon:"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/info_container"
+        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintStart_toStartOf="@+id/info_container"
+        app:layout_constraintTop_toBottomOf="@+id/info_container" />
+
+    <TextView
+        android:id="@+id/currentBloodMoonTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="currentBloodMoon:"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/info_container"
+        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintStart_toStartOf="@+id/info_container"
+        app:layout_constraintTop_toBottomOf="@+id/nextBloodMoonTv" />
+
+    <TextView
+        android:id="@+id/bloodMoonEndTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="bloodMoonEnd:"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/info_container"
+        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintStart_toStartOf="@+id/info_container"
+        app:layout_constraintTop_toBottomOf="@+id/currentBloodMoonTv" />
+
+    <TextView
+        android:id="@+id/isBloodMoonNowTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:gravity="left"
+        android:text="isBloodMoonNow:"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/info_container"
+        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintStart_toStartOf="@+id/info_container"
+        app:layout_constraintTop_toBottomOf="@+id/bloodMoonEndTv" />
 </androidx.constraintlayout.widget.ConstraintLayout>
