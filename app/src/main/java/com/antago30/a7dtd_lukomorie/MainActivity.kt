@@ -17,7 +17,6 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.compose.ui.unit.Constraints
 import com.antago30.a7dtd_lukomorie.utils.Constants
 
 class MainActivity : AppCompatActivity() {

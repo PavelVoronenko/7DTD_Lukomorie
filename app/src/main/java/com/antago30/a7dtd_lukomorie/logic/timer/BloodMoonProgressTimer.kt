@@ -8,6 +8,7 @@ import java.util.Locale
 
 class BloodMoonProgressTimer(
     private val previousBloodMoonStart: LocalDateTime,
+    private val currentBloodMoon: LocalDateTime,
     val nextBloodMoonStart: LocalDateTime,
     private val bloodMoonEnd: LocalDateTime,
     private val onTick: (progressPercent: Int, timeLeftFormatted: String, isBloodMoonActive: Boolean) -> Unit,
@@ -23,7 +24,7 @@ class BloodMoonProgressTimer(
     private val timerRunnable = object : Runnable {
         override fun run() {
             val now = LocalDateTime.now()
-            val isBloodMoonActive = now.isAfter(nextBloodMoonStart) && now.isBefore(bloodMoonEnd)
+            val isBloodMoonActive = now.isAfter(currentBloodMoon) && now.isBefore(bloodMoonEnd)
 
             val remainingMillis = if (isBloodMoonActive) {
                 ChronoUnit.MILLIS.between(now, bloodMoonEnd).coerceAtLeast(0)
@@ -32,8 +33,8 @@ class BloodMoonProgressTimer(
             }
 
             val progress = if (isBloodMoonActive) {
-                onFinish()
-                stop()
+                //onFinish()
+                //stop()
                 100
             } else {
                 val elapsedMillis = ChronoUnit.MILLIS.between(previousBloodMoonStart, now).coerceAtLeast(0)

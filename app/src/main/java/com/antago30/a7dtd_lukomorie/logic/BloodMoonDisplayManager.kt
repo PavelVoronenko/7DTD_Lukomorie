@@ -2,7 +2,6 @@ package com.antago30.a7dtd_lukomorie.logic
 
 import android.util.Log
 import android.widget.TextView
-import com.antago30.a7dtd_lukomorie.R
 import com.antago30.a7dtd_lukomorie.logic.timer.BloodMoonProgressTimer
 import com.antago30.a7dtd_lukomorie.utils.Constants
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -88,7 +87,9 @@ class BloodMoonDisplayManager(
             previousBloodMoonStart = previousBloodMoon,
             nextBloodMoonStart = nextBloodMoon,
             bloodMoonEnd = bloodMoonEnd,
+            currentBloodMoon = currentBloodMoon,
             onTick = { progress, timeFormatted, isBloodMoonNow ->
+
                 if (isBloodMoonNow) {
                     timerText.text = "Сейчас!"
                     circularTimer.progress = 100
