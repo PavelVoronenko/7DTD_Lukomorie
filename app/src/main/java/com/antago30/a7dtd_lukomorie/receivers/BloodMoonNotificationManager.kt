@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
@@ -15,16 +14,15 @@ import androidx.core.content.edit
 import java.time.LocalDateTime
 import java.time.ZoneId
 import androidx.core.net.toUri
-import java.time.Instant
 
 class BloodMoonNotificationManager(private val context: Context) {
 
     companion object {
-        private const val PREFS_NAME = "blood_moon_reminder"
-        private const val KEY_IS_ACTIVE = "is_active"
+        const val PREFS_NAME = "blood_moon_reminder"
+        const val KEY_IS_ACTIVE = "is_active"
         private const val KEY_TRIGGER_TIME = "trigger_time"
         private const val KEY_REMINDER_MINUTES = "reminder_minutes"
-        private const val KEY_SHOULD_DISABLE = "should_disable"
+        const val KEY_SHOULD_DISABLE = "should_disable"
         private const val REQUEST_CODE = 1001
     }
 
@@ -33,30 +31,32 @@ class BloodMoonNotificationManager(private val context: Context) {
     private var isScheduling = false
 
     @RequiresPermission(Manifest.permission.SCHEDULE_EXACT_ALARM)
-    fun scheduleReminder(nextBloodMoonTime: LocalDateTime, minutesBefore: Int, onScheduled: () -> Unit) {
-        if (isScheduling) return
+    fun scheduleReminder(
+        nextBloodMoonTime: LocalDateTime,
+        minutesBefore: Int,
+        onScheduled: () -> Unit,
+        onFailed: () -> Unit = {}
+    ) {
+        if (isScheduling) {
+            onFailed()
+            return
+        }
         isScheduling = true
-
-        Log.d("ALARM_DEBUG", "nextBloodMoonTime: $nextBloodMoonTime")
-        Log.d("ALARM_DEBUG", "minutesBefore: $minutesBefore")
 
         val triggerTime = nextBloodMoonTime.minusMinutes(minutesBefore.toLong())
 
-        Log.d("ALARM_DEBUG", "triggerTime: $triggerTime")
-
         val triggerMillis = triggerTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
-        Log.d("ALARM_DEBUG", "triggerMillis: $triggerMillis")
-        Log.d("ALARM_DEBUG", "Formatted trigger time: ${Instant.ofEpochMilli(triggerMillis).atZone(ZoneId.systemDefault())}")
-
         if (triggerMillis < System.currentTimeMillis()) {
-            Toast.makeText(context, "До луны меньше времени, чем установлено", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "До луны меньше времени, чем установлено", Toast.LENGTH_SHORT)
+                .show()
+            isScheduling = false
+            onFailed()
             return
         }
 
-        val bloodMoonMillis = nextBloodMoonTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-
-
+        val bloodMoonMillis =
+            nextBloodMoonTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
         val intent = Intent(context, BloodMoonNotificationReceiver::class.java).apply {
             putExtra("original_blood_moon_millis", bloodMoonMillis)
@@ -84,14 +84,10 @@ class BloodMoonNotificationManager(private val context: Context) {
 
             onScheduled()
         } catch (e: SecurityException) {
-            // Обработка случая, когда пользователь отключил точные будильники
-            Toast.makeText(
-                context,
-                "Разрешите точные будильники в настройках",
-                Toast.LENGTH_LONG
-            ).show()
+            // Обработка случая, когда пользователь отключил будильники
+            Toast.makeText(context, "Разрешите точные будильники в настройках", Toast.LENGTH_LONG)
+                .show()
 
-            // Опционально: открыть настройки
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
                     data = "package:${context.packageName}".toUri()
@@ -99,8 +95,10 @@ class BloodMoonNotificationManager(private val context: Context) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
             }
+            onFailed()
         } catch (e: Exception) {
             Toast.makeText(context, "Ошибка при установке напоминания", Toast.LENGTH_LONG).show()
+            onFailed()
         } finally {
             isScheduling = false
         }

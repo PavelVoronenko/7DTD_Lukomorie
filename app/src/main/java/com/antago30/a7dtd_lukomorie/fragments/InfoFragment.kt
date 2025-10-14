@@ -1,5 +1,7 @@
 package com.antago30.a7dtd_lukomorie.fragments
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -34,6 +36,7 @@ class InfoFragment : BaseFragment() {
     private lateinit var nextBloodMoonText: TextView
     private lateinit var spinnerReminder: Spinner
     private lateinit var switchReminder: SwitchMaterial
+    private lateinit var bloodMoonPrefs: SharedPreferences
 
     private var bloodMoonTimer: BloodMoonProgressTimer? = null
     private var displayManager: BloodMoonDisplayManager? = null
@@ -66,11 +69,27 @@ class InfoFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_info, container, false)
+
+        bloodMoonPrefs = requireContext().getSharedPreferences(
+            BloodMoonNotificationManager.PREFS_NAME,
+            Context.MODE_PRIVATE
+        )
+
         initViews(view)
         initReminderSystem()
         setupSpinner()
         setupSwitch()
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bloodMoonPrefs.registerOnSharedPreferenceChangeListener(prefsListener)
+    }
+
+    override fun onPause() {
+        bloodMoonPrefs.unregisterOnSharedPreferenceChangeListener(prefsListener)
+        super.onPause()
     }
 
     private fun initViews(view: View) {
@@ -85,7 +104,8 @@ class InfoFragment : BaseFragment() {
 
     private fun initReminderSystem() {
         reminderManager = BloodMoonNotificationManager(requireContext())
-        permissionManager = NotificationPermissionManager(requireContext(), requestPermissionLauncher)
+        permissionManager =
+            NotificationPermissionManager(requireContext(), requestPermissionLauncher)
         exactAlarmManager = ExactAlarmPermissionManager(requireContext())
     }
 
@@ -105,43 +125,80 @@ class InfoFragment : BaseFragment() {
     private fun setupSwitch() {
         switchReminder.trackTintList = ColorStateList.valueOf("#666666".toColorInt())
         switchReminder.setOnCheckedChangeListener { _, isChecked ->
-            handleSwitchToggle(isChecked)
+            handleSwitchToggle(isChecked, false)
         }
     }
 
-    fun handleSwitchToggle(isChecked: Boolean) {
-        switchReminder.thumbTintList = ColorStateList.valueOf(
-            if (isChecked) "#00FF00".toColorInt() else "#FF0000".toColorInt()
-        )
-
+    fun handleSwitchToggle(isChecked: Boolean, message: Boolean) {
         if (isChecked) {
             cachedNextBloodMoonDateTime?.let { nextBloodMoonTime ->
                 val minutes = getSelectedMinutes()
 
                 if (!exactAlarmManager.canScheduleExactAlarms()) {
-                    Toast.makeText(context, "Разрешите точные будильники в настройках", Toast.LENGTH_LONG).show()
+                    if (message) Toast.makeText(
+                        context,
+                        "Разрешите точные будильники в настройках",
+                        Toast.LENGTH_LONG
+                    ).show()
                     exactAlarmManager.openExactAlarmSettings()
                     switchReminder.isChecked = false
                     return
                 }
 
                 permissionManager.requestPermissionIfNeeded {
-                    reminderManager.scheduleReminder(nextBloodMoonTime, minutes) {
-                        Toast.makeText(context, "Напоминание установлено", Toast.LENGTH_SHORT).show()
-                    }
+                    reminderManager.scheduleReminder(
+                        nextBloodMoonTime,
+                        minutes,
+                        onScheduled = {
+                            switchReminder.thumbTintList =
+                                ColorStateList.valueOf("#00FF00".toColorInt())
+                            if (message) Toast.makeText(
+                                context,
+                                "Напоминание установлено",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        },
+                        onFailed = {
+                            switchReminder.isChecked = false
+                        }
+                    )
                 }
+            } ?: run {
+                if (message) Toast.makeText(
+                    context,
+                    "Нет данных о времени Кровавой Луны",
+                    Toast.LENGTH_SHORT
+                ).show()
+                switchReminder.isChecked = false
             }
         } else {
             reminderManager.cancelReminder()
+            switchReminder.thumbTintList = ColorStateList.valueOf("#FF0000".toColorInt())
+            //if (message)
             Toast.makeText(context, "Напоминание отключено", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private val prefsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == BloodMoonNotificationManager.KEY_IS_ACTIVE ||
+            key == BloodMoonNotificationManager.KEY_SHOULD_DISABLE
+        ) {
+            restoreReminderState()
         }
     }
 
     private fun setupReminderAfterPermission() {
         pendingReminderData?.let { (nextBloodMoonTime, minutes) ->
-            reminderManager.scheduleReminder(nextBloodMoonTime, minutes) {
-                Toast.makeText(context, "Напоминание установлено", Toast.LENGTH_SHORT).show()
-            }
+            reminderManager.scheduleReminder(
+                nextBloodMoonTime,
+                minutes,
+                onScheduled = {
+                    Toast.makeText(context, "Напоминание установлено", Toast.LENGTH_SHORT).show()
+                },
+                onFailed = {
+                    switchReminder.isChecked = false
+                }
+            )
             pendingReminderData = null
         }
     }
@@ -242,12 +299,15 @@ class InfoFragment : BaseFragment() {
     }
 
     private fun restoreReminderState() {
+        if (!isAdded || view == null) return
+
         if (reminderManager.shouldAutoDisable()) {
             switchReminder.setOnCheckedChangeListener(null)
             switchReminder.isChecked = false
-            switchReminder.thumbTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.red))
+            switchReminder.thumbTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.red))
             switchReminder.setOnCheckedChangeListener { _, isChecked ->
-                handleSwitchToggle(isChecked)
+                handleSwitchToggle(isChecked, true)
             }
             reminderManager.cancelReminder()
             reminderManager.clearAutoDisableFlag()
@@ -257,12 +317,12 @@ class InfoFragment : BaseFragment() {
             val position = getPositionForMinutes(savedMinutes)
             spinnerReminder.setSelection(position)
         } else {
-            // Если напоминание неактивно и не требует автоотключения — явно выключаем свитчер
             switchReminder.setOnCheckedChangeListener(null)
             switchReminder.isChecked = false
-            switchReminder.thumbTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.red))
+            switchReminder.thumbTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.red))
             switchReminder.setOnCheckedChangeListener { _, isChecked ->
-                handleSwitchToggle(isChecked)
+                handleSwitchToggle(isChecked, true)
             }
         }
     }
@@ -272,10 +332,20 @@ class InfoFragment : BaseFragment() {
             if (switchReminder.isChecked) {
                 cachedNextBloodMoonDateTime?.let { nextBloodMoonTime ->
                     val minutes = parseMinutesFromSpinner(position)
-                    reminderManager.cancelReminder()
-                    reminderManager.scheduleReminder(nextBloodMoonTime, minutes) {
-                        Toast.makeText(context, "Напоминание обновлено", Toast.LENGTH_SHORT).show()
-                    }
+                    //reminderManager.cancelReminder()
+                    reminderManager.scheduleReminder(
+                        nextBloodMoonTime,
+                        minutes,
+                        onScheduled = {
+                            switchReminder.thumbTintList =
+                                ColorStateList.valueOf("#00FF00".toColorInt())
+                            Toast.makeText(context, "Напоминание обновлено", Toast.LENGTH_SHORT)
+                                .show()
+                        },
+                        onFailed = {
+                            switchReminder.isChecked = false
+                        }
+                    )
                 }
             }
         }
