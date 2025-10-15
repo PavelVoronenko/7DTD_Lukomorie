@@ -40,10 +40,6 @@ class InfoFragment : BaseFragment() {
     private lateinit var bloodMoonPrefs: SharedPreferences
     private lateinit var circularTimer: CircularProgressIndicator
     private lateinit var timerText: TextView
-    /*private lateinit var nextBloodMoonTv: TextView
-    private lateinit var currentBloodMoonTv: TextView
-    private lateinit var bloodMoonEndTv: TextView
-    private lateinit var isBloodMoonNowTv: TextView*/
 
     private var bloodMoonTimer: BloodMoonProgressTimer? = null
     private var displayManager: BloodMoonDisplayManager? = null
@@ -89,18 +85,6 @@ class InfoFragment : BaseFragment() {
         return view
     }
 
-    override fun onResume() {
-        super.onResume()
-        bloodMoonTimer?.start()
-        bloodMoonPrefs.registerOnSharedPreferenceChangeListener(prefsListener)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        bloodMoonPrefs.unregisterOnSharedPreferenceChangeListener(prefsListener)
-        bloodMoonTimer?.stop()
-    }
-
     private fun initViews(view: View) {
         statusText = view.findViewById(R.id.status_value)
         timeText = view.findViewById(R.id.time_value)
@@ -111,12 +95,6 @@ class InfoFragment : BaseFragment() {
         switchReminder = view.findViewById(R.id.switch_reminder)
         circularTimer = view.findViewById(R.id.circular_timer)
         timerText = view.findViewById(R.id.timer_text)
-
-        /*nextBloodMoonTv = view.findViewById(R.id.nextBloodMoonTv)
-        currentBloodMoonTv = view.findViewById(R.id.currentBloodMoonTv)
-        bloodMoonEndTv = view.findViewById(R.id.bloodMoonEndTv)
-        isBloodMoonNowTv = view.findViewById(R.id.isBloodMoonNowTv)*/
-
     }
 
     private fun initReminderSystem() {
@@ -191,7 +169,6 @@ class InfoFragment : BaseFragment() {
         } else {
             reminderManager.cancelReminder()
             switchReminder.thumbTintList = ColorStateList.valueOf("#FF0000".toColorInt())
-            //if (message)
             Toast.makeText(context, "Напоминание отключено", Toast.LENGTH_SHORT).show()
         }
     }
@@ -288,10 +265,11 @@ class InfoFragment : BaseFragment() {
 
     private fun startBloodMoonTimer(data: ServerInfo) {
         val nextBloodMoonDateTime = cachedNextBloodMoonDateTime ?: return
-        val previousBloodMoonDateTime = nextBloodMoonDateTime.minusSeconds(7 * Constants.LENGTH_OF_DAY)
+        val previousBloodMoonDateTime =
+            nextBloodMoonDateTime.minusSeconds(7 * Constants.LENGTH_OF_DAY)
         var currentBloodMoonDateTime: LocalDateTime
 
-        if (LocalDateTime.now() > previousBloodMoonDateTime.plusSeconds(BloodMoonDisplayManager.BLOOD_MOON_DURATION_HOURS * Constants.LENGTH_OF_DAY / 24) ) {
+        if (LocalDateTime.now() > previousBloodMoonDateTime.plusSeconds(BloodMoonDisplayManager.BLOOD_MOON_DURATION_HOURS * Constants.LENGTH_OF_DAY / 24)) {
             currentBloodMoonDateTime = nextBloodMoonDateTime
         } else {
             currentBloodMoonDateTime = previousBloodMoonDateTime
@@ -306,12 +284,7 @@ class InfoFragment : BaseFragment() {
                 timerText = requireView().findViewById(R.id.timer_text),
                 previousBloodMoon = previousBloodMoonDateTime,
                 currentBloodMoon = currentBloodMoonDateTime,
-                nextBloodMoon = nextBloodMoonDateTime,
-
-                nextBloodMoonTv = requireView().findViewById(R.id.nextBloodMoonTv),
-                currentBloodMoonTv = requireView().findViewById(R.id.currentBloodMoonTv),
-                bloodMoonEndTv = requireView().findViewById(R.id.bloodMoonEndTv),
-                isBloodMoonNowTv = requireView().findViewById(R.id.isBloodMoonNowTv)
+                nextBloodMoon = nextBloodMoonDateTime
             )
             displayManager?.updateStaticState()
             return
@@ -322,12 +295,7 @@ class InfoFragment : BaseFragment() {
             timerText = timerText,
             previousBloodMoon = previousBloodMoonDateTime,
             currentBloodMoon = currentBloodMoonDateTime,
-            nextBloodMoon = nextBloodMoonDateTime,
-
-            nextBloodMoonTv = requireView().findViewById(R.id.nextBloodMoonTv),
-            currentBloodMoonTv = requireView().findViewById(R.id.currentBloodMoonTv),
-            bloodMoonEndTv = requireView().findViewById(R.id.bloodMoonEndTv),
-            isBloodMoonNowTv = requireView().findViewById(R.id.isBloodMoonNowTv)
+            nextBloodMoon = nextBloodMoonDateTime
         )
 
         bloodMoonTimer = displayManager?.startDynamicTimer(
@@ -375,7 +343,7 @@ class InfoFragment : BaseFragment() {
             if (switchReminder.isChecked) {
                 cachedNextBloodMoonDateTime?.let { nextBloodMoonTime ->
                     val minutes = parseMinutesFromSpinner(position)
-                    //reminderManager.cancelReminder()
+
                     reminderManager.scheduleReminder(
                         nextBloodMoonTime,
                         minutes,
@@ -418,6 +386,18 @@ class InfoFragment : BaseFragment() {
             120 -> 3
             else -> 0
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bloodMoonTimer?.start()
+        bloodMoonPrefs.registerOnSharedPreferenceChangeListener(prefsListener)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        bloodMoonPrefs.unregisterOnSharedPreferenceChangeListener(prefsListener)
+        bloodMoonTimer?.stop()
     }
 
     override fun onDestroyView() {

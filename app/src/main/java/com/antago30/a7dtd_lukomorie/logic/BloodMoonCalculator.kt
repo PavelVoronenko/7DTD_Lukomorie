@@ -16,7 +16,7 @@ class BloodMoonCalculator(
 
     /**
      * Рассчитывает дату и время следующей кровавой луны.
-    */
+     */
     fun calculateNextBloodMoon(
         currentGameDay: Int,
         currentGameTime: String,
@@ -26,7 +26,8 @@ class BloodMoonCalculator(
         val daysUntilNextBloodMoonDay = calculateDaysUntilNextBloodMoonDay(currentGameDay)
 
         // Определяем игровое время начала луны
-        val bloodMoonGameTime = LocalTime.of(bloodMoonHour.toInt(), ((bloodMoonHour % 1) * 60).toInt())
+        val bloodMoonGameTime =
+            LocalTime.of(bloodMoonHour.toInt(), ((bloodMoonHour % 1) * 60).toInt())
 
         // Парсим текущее игровое время
         val parsedCurrentTime = try {
@@ -38,17 +39,18 @@ class BloodMoonCalculator(
 
         // Проверяем, уже ли прошла луна сегодня (если сегодня день луны)
         val isTodayBloodMoonDay = (currentGameDay % bloodMoonDay == 0)
-        val isBloodMoonPassedToday = isTodayBloodMoonDay && parsedCurrentTime.isAfter(bloodMoonGameTime)
+        val isBloodMoonPassedToday =
+            isTodayBloodMoonDay && parsedCurrentTime.isAfter(bloodMoonGameTime)
 
         // Если луна уже прошла сегодня, ждём следующего дня луны
-        val finalDaysToAdd = if (isBloodMoonPassedToday) daysUntilNextBloodMoonDay + bloodMoonDay else daysUntilNextBloodMoonDay
+        val finalDaysToAdd =
+            if (isBloodMoonPassedToday) daysUntilNextBloodMoonDay + bloodMoonDay else daysUntilNextBloodMoonDay
 
         // Считаем, сколько реальных секунд осталось до начала луны
         val secondsUntilBloodMoonStarts = calculateSecondsUntilGameTime(
             currentGameDay,
             parsedCurrentTime,
             finalDaysToAdd,
-            bloodMoonGameTime
         )
 
         // Добавляем секунды к текущему реальному времени
@@ -70,11 +72,7 @@ class BloodMoonCalculator(
         currentGameDay: Int,
         currentTime: LocalTime,
         daysToAdd: Int,
-        targetTime: LocalTime
     ): Double {
-        // Общее количество игровых дней, в которых будет луна
-        val targetGameDay = currentGameDay + daysToAdd
-
         // Сколько игровых часов прошло с начала текущего дня
         val currentHours = currentTime.hour + currentTime.minute / 60.0
 
@@ -93,7 +91,8 @@ class BloodMoonCalculator(
         val fullDaysInHours = (daysToAdd - 1) * GAME_HOURS_PER_DAY
         val hoursFromStartOfTargetDay = bloodMoonHour
 
-        val totalGameHoursUntilBloodMoon = hoursUntilEndOfCurrentDay + fullDaysInHours + hoursFromStartOfTargetDay
+        val totalGameHoursUntilBloodMoon =
+            hoursUntilEndOfCurrentDay + fullDaysInHours + hoursFromStartOfTargetDay
 
         return totalGameHoursUntilBloodMoon * (gameDayLengthSeconds / GAME_HOURS_PER_DAY)
     }

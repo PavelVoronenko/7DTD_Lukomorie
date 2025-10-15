@@ -12,10 +12,10 @@ class BloodMoonProgressTimer(
     val nextBloodMoonStart: LocalDateTime,
     private val bloodMoonEnd: LocalDateTime,
     private val onTick: (progressPercent: Int, timeLeftFormatted: String, isBloodMoonActive: Boolean) -> Unit,
-    private val onFinish: () -> Unit = {}
 ) {
 
-    private val totalCycleDurationMillis = ChronoUnit.MILLIS.between(previousBloodMoonStart, nextBloodMoonStart).coerceAtLeast(1)
+    private val totalCycleDurationMillis =
+        ChronoUnit.MILLIS.between(previousBloodMoonStart, nextBloodMoonStart).coerceAtLeast(1)
 
     private var isRunning = false
     private val handler = Handler(Looper.getMainLooper())
@@ -33,26 +33,19 @@ class BloodMoonProgressTimer(
             }
 
             val progress = if (isBloodMoonActive) {
-                //onFinish()
-                //stop()
                 100
             } else {
-                val elapsedMillis = ChronoUnit.MILLIS.between(previousBloodMoonStart, now).coerceAtLeast(0)
-                ((elapsedMillis.toDouble() / totalCycleDurationMillis) * 100).toInt().coerceIn(0, 100)
+                val elapsedMillis =
+                    ChronoUnit.MILLIS.between(previousBloodMoonStart, now).coerceAtLeast(0)
+                ((elapsedMillis.toDouble() / totalCycleDurationMillis) * 100).toInt()
+                    .coerceIn(0, 100)
             }
 
-            /*val timeFormatted = if (isBloodMoonActive) {
-                "Сейчас!"
-            } else {
-                val hours = remainingMillis / (1000 * 60 * 60)
-                val minutes = (remainingMillis / (1000 * 60)) % 60
-                val seconds = (remainingMillis / 1000) % 60
-                String.format(Locale.ROOT, "%02d:%02d:%02d", hours, minutes, seconds)
-            }*/
             val hours = remainingMillis / (1000 * 60 * 60)
             val minutes = (remainingMillis / (1000 * 60)) % 60
             val seconds = (remainingMillis / 1000) % 60
-            val timeFormatted = String.format(Locale.ROOT, "%02d:%02d:%02d", hours, minutes, seconds)
+            val timeFormatted =
+                String.format(Locale.ROOT, "%02d:%02d:%02d", hours, minutes, seconds)
 
             onTick(progress, timeFormatted, isBloodMoonActive)
             if (isRunning) {
@@ -72,6 +65,4 @@ class BloodMoonProgressTimer(
         isRunning = false
         handler.removeCallbacksAndMessages(null)
     }
-
-    fun isRunning(): Boolean = isRunning
 }
