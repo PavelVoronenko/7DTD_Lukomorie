@@ -4,8 +4,6 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.SystemBarStyle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
@@ -25,13 +23,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.auto(
-                getColor(R.color.status_bar_dark),
-                getColor(R.color.status_bar_white)
-            )
-        )
 
         setContentView(R.layout.activity_main)
 

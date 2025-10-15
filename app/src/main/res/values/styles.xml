@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.7DTD_Lukomorie" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Цвета и параметры темы -->
-    </style>
 
     <style name="NavDrawerText" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textSize">12sp</item>
@@ -21,4 +18,5 @@
     <style name="SpinnerItem" parent="Widget.AppCompat.TextView.SpinnerItem">
         <item name="android:textColor">#FFFFFF</item>
     </style>
+
 </resources>
