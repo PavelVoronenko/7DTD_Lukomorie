@@ -227,7 +227,14 @@ class InfoFragment : BaseFragment() {
     }
 
     private fun updateBasicInfo(data: ServerInfo) {
-        statusText.text = if (data.status == "в сети.") " Online" else " Offline"
+        if(data.status == "в сети.") {
+            statusText.setTextColor(ContextCompat.getColor(requireContext(), R.color.green))
+            statusText.text = " Online"
+        } else {
+            statusText.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
+            statusText.text = " Offline"
+        }
+
         timeText.text = data.time
         dayText.text = "${data.day}"
         dayText.setTextColor(

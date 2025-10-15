@@ -12,5 +12,6 @@
     <color name="switch_thumb_on">#D32F2F</color>
     <color name="switch_track_off">#424242</color>
     <color name="red">#FF0000</color>
+    <color name="green">#00FF00</color>
 
 </resources>

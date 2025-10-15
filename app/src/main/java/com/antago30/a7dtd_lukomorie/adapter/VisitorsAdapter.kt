@@ -13,6 +13,7 @@ class VisitorsAdapter(private var visitors: List<VisitorItem>) :
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView = view.findViewById(R.id.visitor_name)
+        val date: TextView = view.findViewById(R.id.visitor_date)
         val time: TextView = view.findViewById(R.id.visitor_time)
     }
 
@@ -25,6 +26,7 @@ class VisitorsAdapter(private var visitors: List<VisitorItem>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val visitor = visitors[position]
         holder.name.text = visitor.name
+        holder.date.text = visitor.date
         holder.time.text = visitor.time
     }
 

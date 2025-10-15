@@ -17,4 +17,8 @@
         <item name="elevation">0dp</item>
         <item name="itemHorizontalPadding">8dp</item>
     </style>
+
+    <style name="SpinnerItem" parent="Widget.AppCompat.TextView.SpinnerItem">
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
 </resources>

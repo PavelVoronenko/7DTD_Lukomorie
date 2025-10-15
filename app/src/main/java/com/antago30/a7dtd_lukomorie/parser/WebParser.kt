@@ -117,8 +117,10 @@ class WebParser {
                                 }
                                 "visitors" -> {
                                     val name = parser.getAttributeValue(null, "name")
-                                    val date = parser.getAttributeValue(null, "date") ?: ""
-                                    visitors.add(VisitorItem(name, date))
+                                    val dateAndTime = (parser.getAttributeValue(null, "date") ?: "").split(" ")
+                                    val date = dateAndTime[0]
+                                    val time = dateAndTime[1]
+                                    visitors.add(VisitorItem(name, date, time))
                                 }
                                 "blacklist" -> {
                                     val name = parser.getAttributeValue(null, "name")

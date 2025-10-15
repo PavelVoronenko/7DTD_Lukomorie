@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:strokeColor="#333333"
-    app:strokeWidth="0dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp"
+    android:layout_marginStart="6dp"
+    android:layout_marginTop="2dp"
+    android:layout_marginEnd="4dp"
+    android:layout_marginBottom="2dp"
     app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="8dp"
-    app:cardElevation="0dp">
+    app:cardElevation="0dp"
+    app:strokeColor="#333333"
+    app:strokeWidth="0dp">
 
-    <TableRow
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
+        android:orientation="horizontal"
         android:paddingStart="4dp"
+        android:paddingTop="4dp"
         android:paddingEnd="4dp"
-        android:stretchColumns="*">
+        android:paddingBottom="4dp">
 
         <TextView
             android:id="@+id/player_name"
@@ -25,30 +28,28 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:ellipsize="end"
-            android:gravity="start"
+            android:gravity="start|center_vertical"
             android:maxLines="1"
             android:padding="4dp"
             android:textColor="@android:color/white"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/player_level"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="center|center_vertical"
             android:padding="4dp"
             android:textColor="@android:color/holo_blue_light"
-            android:textSize="14sp"
-            />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/player_deaths"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="center|center_vertical"
             android:padding="4dp"
             android:textColor="@android:color/holo_red_light"
             android:textSize="14sp" />
@@ -58,11 +59,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="center|center_vertical"
             android:padding="4dp"
             android:textColor="@android:color/holo_green_light"
             android:textSize="14sp" />
 
-    </TableRow>
+    </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

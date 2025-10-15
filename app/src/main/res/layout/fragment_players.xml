@@ -21,14 +21,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
+    <!-- Заголовок таблицы -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/table_header_card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
         app:cardBackgroundColor="#1e1e1e"
         app:cardCornerRadius="8dp"
         app:cardElevation="1dp"
@@ -37,20 +37,20 @@
         app:layout_constraintTop_toBottomOf="@+id/title_text"
         app:strokeColor="#666666">
 
-        <TableRow
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:paddingStart="4dp"
             android:paddingTop="8dp"
             android:paddingEnd="4dp"
-            android:paddingBottom="8dp"
-            android:stretchColumns="*">
+            android:paddingBottom="8dp">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:gravity="start"
+                android:gravity="start|center_vertical"
                 android:paddingStart="8dp"
                 android:paddingTop="4dp"
                 android:paddingEnd="4dp"
@@ -92,14 +92,14 @@
                 android:textColor="@android:color/holo_green_light"
                 android:textSize="14sp"
                 android:textStyle="bold" />
-        </TableRow>
+        </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
+    <!-- Список игроков -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="4dp"
         android:clipToPadding="false"
         android:nestedScrollingEnabled="false"
         android:paddingStart="8dp"
@@ -111,6 +111,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/table_header_card" />
 
+    <!-- Пустое состояние -->
     <TextView
         android:id="@+id/empty_text"
         android:layout_width="wrap_content"

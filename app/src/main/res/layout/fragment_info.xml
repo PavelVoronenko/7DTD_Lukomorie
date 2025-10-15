@@ -311,6 +311,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/spinner_border"
                     android:entries="@array/reminder_times"
+                    android:textColor="#FFFFFF"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/reminder_label"
                     app:layout_constraintTop_toTopOf="parent"

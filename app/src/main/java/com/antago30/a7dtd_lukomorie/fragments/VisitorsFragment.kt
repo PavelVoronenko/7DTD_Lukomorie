@@ -1,7 +1,6 @@
 package com.antago30.a7dtd_lukomorie.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +37,6 @@ class VisitorsFragment : BaseFragment() {
         return try {
             webParser.parseVisitors(Constants.FULL_DATA_URL)
         } catch (e: IOException) {
-            Log.e("VisitorsFragment", "Ошибка загрузки посетителей", e)
             emptyList<VisitorItem>()
         }
     }
