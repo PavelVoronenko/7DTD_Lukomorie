@@ -4,7 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="purple_500">#9925D7</color>
     <color name="status_bar_light">@color/white</color>
-    <color name="status_bar_dark">@android:color/transparent</color>
+    <color name="status_bar_dark">#080A09</color>
     <color name="transparent">#00000000</color>
     <color name="semi_white">#20FFFFFF</color>
     <color name="lukomorie_red">#D32F2F</color>

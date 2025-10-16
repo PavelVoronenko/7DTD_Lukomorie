@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
 
         drawerLayout = findViewById(R.id.drawer_layout)
@@ -34,12 +33,21 @@ class MainActivity : AppCompatActivity() {
             MenuItem("Новости", NewsFragment::class.java, R.drawable.ic_news_white_24dp),
             MenuItem("Бан-лист", BanListFragment::class.java, R.drawable.ic_ban_white_24dp),
             MenuItem("Игроки онлайн", PlayersFragment::class.java, R.drawable.ic_people_white_24dp),
-            MenuItem("Лидеры сервера", LeaderboardFragment::class.java, R.drawable.ic_leaderboard_white_24dp),
-            MenuItem("Посетители за сутки", VisitorsFragment::class.java, R.drawable.ic_visitors_white_24dp)
+            MenuItem(
+                "Лидеры сервера",
+                LeaderboardFragment::class.java,
+                R.drawable.ic_leaderboard_white_24dp
+            ),
+            MenuItem(
+                "Посетители за сутки",
+                VisitorsFragment::class.java,
+                R.drawable.ic_visitors_white_24dp
+            )
         )
 
         for (item in menuItems) {
-            val menuItemView = layoutInflater.inflate(R.layout.drawer_menu_item, menuItemsContainer, false)
+            val menuItemView =
+                layoutInflater.inflate(R.layout.drawer_menu_item, menuItemsContainer, false)
             val icon: ImageView = menuItemView.findViewById(R.id.menu_item_icon)
             val title: TextView = menuItemView.findViewById(R.id.menu_item_title)
 
